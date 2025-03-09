@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
 // Animation constants
-const DURATION = 0.25;
+const DURATION = 1.1;
 const STAGGER = 0;
 
 interface FlipLinkProps {
@@ -42,7 +42,7 @@ export function FlipLink({
               }}
               transition={{
                 duration: DURATION,
-                ease: "easeInOut",
+                ease: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
                 delay: STAGGER * i,
               }}
               className="inline-block"
@@ -61,7 +61,7 @@ export function FlipLink({
               }}
               transition={{
                 duration: DURATION,
-                ease: "easeInOut",
+                ease: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
                 delay: STAGGER * i,
               }}
               className="inline-block text-black"

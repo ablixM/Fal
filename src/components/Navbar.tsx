@@ -32,7 +32,7 @@ export function Navbar() {
   const transitionProps = {
     type: "tween",
     ease: "easeInOut",
-    duration: 0.5, // Match this with the CSS duration
+    duration: 0.3, // Match this with the CSS duration
   };
 
   // Main navbar animation variants
@@ -77,8 +77,8 @@ export function Navbar() {
       y: 50,
       x: 50,
       transition: {
-        duration: 0.1,
-        ease: "easeInOut",
+        duration: 1,
+        ease: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       },
     },
     open: {
@@ -86,8 +86,8 @@ export function Navbar() {
       y: 0,
       x: 0,
       transition: {
-        duration: 0.2,
-        ease: "easeOut",
+        duration: 1,
+        ease: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       },
     },
   };
