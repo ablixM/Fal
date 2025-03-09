@@ -29,7 +29,7 @@ function PageTransition({ children }: PageTransitionProps) {
     { scope: container }
   );
   return (
-    <div ref={container}>
+    <div ref={container} className="relative w-full h-100vh overflow-hidden">
       <div className="revealer absolute inset-0 z-50 top-0 left-0 w-full h-100vh bg-black"></div>
       {children}
     </div>
