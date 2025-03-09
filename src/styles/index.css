@@ -12,6 +12,14 @@ body {
 
 .overlay {
   position: fixed;
+  width: 200vw;
+  height: 100vh;
+  z-index: 999;
+  display: flex;
+  pointer-events: none;
+}
+.overlay-2 {
+  position: fixed;
   width: 100vw;
   height: 100vh;
   z-index: 999;
@@ -20,7 +28,7 @@ body {
 }
 
 .bar {
-  width: 10vw;
+  width: 20vw;
   height: 100vh;
   background-color: black;
 

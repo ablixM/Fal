@@ -9,7 +9,7 @@ interface PageTransitionProps {
   children: ReactNode;
 }
 
-const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const arr = [1, 2, 3, 4, 5];
 const customEase = (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t));
 
 function PageTransition({ children }: PageTransitionProps) {
@@ -32,6 +32,20 @@ function PageTransition({ children }: PageTransitionProps) {
         amount: 0.5,
         from: "start",
       },
+      ease: customEase,
+      delay: 0.2,
+    });
+
+    gsap.from(".overlay-2", {
+      duration: 1.5,
+      opacity: 1,
+      ease: customEase,
+      delay: 0.2,
+    });
+
+    gsap.to(".overlay-2", {
+      duration: 1.5,
+      opacity: 0,
       ease: customEase,
       delay: 0.2,
     });
@@ -96,6 +110,7 @@ function PageTransition({ children }: PageTransitionProps) {
           ))}
         </div>
       </div>
+      <div className="overlay-2 bg-black fixed inset-0 z-50 pointer-events-none"></div>
     </div>
   );
 }
