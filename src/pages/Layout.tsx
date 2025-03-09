@@ -1,13 +1,19 @@
 import { Outlet } from "react-router-dom";
 import { Navbar } from "../components/Navbar";
-import { ReactLenis } from "../utils/lenis";
+import PageTransition from "../components/PageTransition";
 
 function Layout() {
   return (
-    <ReactLenis>
+    <div className="flex flex-col min-h-screen">
       <Navbar />
-      <Outlet />
-    </ReactLenis>
+      <main className="flex-grow pt-16">
+        {" "}
+        {/* Add padding-top to account for fixed navbar */}
+        <PageTransition>
+          <Outlet />
+        </PageTransition>
+      </main>
+    </div>
   );
 }
 
