@@ -38,11 +38,11 @@ export function Navbar() {
   // Main navbar animation variants
   const navbarVariants = {
     light: {
-      backgroundColor: "rgba(255, 255, 255, 1)",
+      backgroundColor: "transparent",
       transition: transitionProps,
     },
     dark: {
-      backgroundColor: "rgba(23, 23, 23, 1)",
+      backgroundColor: "transparent",
       transition: transitionProps,
     },
   };

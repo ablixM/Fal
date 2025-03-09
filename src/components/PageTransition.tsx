@@ -1,7 +1,7 @@
-import { ReactNode, useRef } from "react";
-
+import { ReactNode, useEffect, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { useLocation } from "react-router-dom";
 
 gsap.registerPlugin(useGSAP);
 
@@ -9,29 +9,93 @@ interface PageTransitionProps {
   children: ReactNode;
 }
 
-function PageTransition({ children }: PageTransitionProps) {
-  const container = useRef<HTMLDivElement>(null);
-  useGSAP(
-    () => {
-      gsap.from(".revealer", {
-        duration: 1,
-        width: "0",
-        ease: "power3.inOut",
-      });
+const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const customEase = (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t));
 
-      gsap.to(".revealer", {
-        duration: 0.8,
-        left: "100%",
-        ease: "power3.inOut",
-        delay: 1,
+function PageTransition({ children }: PageTransitionProps) {
+  const location = useLocation();
+  const [isNavigating, setIsNavigating] = useState(true);
+  const [prevPath, setPrevPath] = useState(location.pathname);
+
+  // Timeline for enter animation
+  const enterAnimation = () => {
+    const tl = gsap.timeline();
+
+    // Reset bars to full height
+    gsap.set(".bar", { height: "100%" });
+
+    // Animate bars to height 0 (revealing content)
+    tl.to(".bar", {
+      duration: 1.5,
+      height: 0,
+      stagger: {
+        amount: 0.5,
+        from: "start",
+      },
+      ease: customEase,
+      delay: 0.2,
+    });
+
+    return tl;
+  };
+
+  // Timeline for exit animation
+  const exitAnimation = () => {
+    const tl = gsap.timeline();
+
+    // Reset bars to height 0
+    gsap.set(".bar", { height: 0 });
+
+    // Animate bars to full height (covering content)
+    tl.to(".bar", {
+      duration: 1.5,
+      height: "100%",
+      stagger: {
+        amount: 0.5,
+        from: "start",
+      },
+      ease: customEase,
+    });
+
+    return tl;
+  };
+
+  useEffect(() => {
+    // If the path has changed, trigger the transition
+    if (prevPath !== location.pathname) {
+      setIsNavigating(true);
+      setPrevPath(location.pathname);
+    }
+  }, [location.pathname, prevPath]);
+
+  useGSAP(() => {
+    if (isNavigating) {
+      const ctx = gsap.context(() => {
+        exitAnimation().then(() => {
+          enterAnimation();
+          setIsNavigating(false);
+        });
       });
-    },
-    { scope: container }
-  );
+      return () => ctx.revert();
+    }
+  }, [location.pathname, isNavigating]);
+
   return (
-    <div ref={container} className="relative w-full h-100vh overflow-hidden">
-      <div className="revealer absolute inset-0 z-50 top-0 left-0 w-full h-100vh bg-black"></div>
-      {children}
+    <div className="relative w-full min-h-screen">
+      {/* Content */}
+      <div className="relative z-10">{children}</div>
+
+      {/* Overlay with bars */}
+      <div className="overlay fixed inset-0 z-50 pointer-events-none">
+        <div className="grid grid-cols-10 h-full w-full">
+          {arr.map((item) => (
+            <div
+              key={item}
+              className="bar bg-neutral-900 w-full h-full transform-origin-top"
+            />
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

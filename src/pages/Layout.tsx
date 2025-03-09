@@ -4,16 +4,14 @@ import PageTransition from "../components/PageTransition";
 
 function Layout() {
   return (
-    <PageTransition>
-      <div className="flex flex-col min-h-screen overflow-hidden">
-        <Navbar />
+    <div className="flex flex-col min-h-screen">
+      <Navbar />
+      <PageTransition>
         <main className="flex-grow pt-16">
-          {" "}
-          {/* Add padding-top to account for fixed navbar */}
           <Outlet />
         </main>
-      </div>
-    </PageTransition>
+      </PageTransition>
+    </div>
   );
 }
 
