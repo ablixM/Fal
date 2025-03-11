@@ -44,7 +44,7 @@ function LandingText() {
             amount: 0.5,
             from: "start",
           },
-          delay: 0.5,
+          delay: 2.5,
           onComplete: () => {
             hasAnimatedRef.current = true;
           },
