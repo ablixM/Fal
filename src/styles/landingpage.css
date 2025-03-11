@@ -1,0 +1,52 @@
+.header .row {
+    display: flex;
+    gap: 2em;
+  }
+  
+  .header .row .col {
+    flex: 1;
+  }
+  
+
+
+  
+  .header .row:nth-child(2) .col:nth-child(2) {
+    display: flex;
+  }
+
+  .line {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+  }
+  
+
+
+  .header .title .line span,
+  .line p {
+    position: relative;
+    will-change: transform;
+  }
+  
+  .header .title .line span {
+    display: block;
+    transform: none;
+  }
+  
+
+  .line p {
+    transform: translateY(100%);
+  }
+
+  .header .line {
+    overflow: hidden;
+    display: block;
+  }
+
+  .header .line span {
+    display: block;
+    will-change: transform;
+    padding:  0;
+  }
+
+
+
+

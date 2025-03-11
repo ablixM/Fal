@@ -95,7 +95,7 @@ function PageTransition({ children }: PageTransitionProps) {
   }, [location.pathname, isNavigating]);
 
   return (
-    <div className="relative w-full min-h-screen">
+    <>
       {/* Content */}
       <div className="relative z-10">{children}</div>
 
@@ -105,13 +105,13 @@ function PageTransition({ children }: PageTransitionProps) {
           {arr.map((item) => (
             <div
               key={item}
-              className="bar bg-neutral-900 w-full h-full transform-origin-top"
+              className="bar bg-[var(--color-secondary)] w-full h-full transform-origin-top"
             />
           ))}
         </div>
       </div>
-      <div className="overlay-2 bg-black fixed inset-0 z-50 pointer-events-none"></div>
-    </div>
+      <div className="overlay-2 bg-[var(--color-secondary)] fixed inset-0 z-50 pointer-events-none"></div>
+    </>
   );
 }
 

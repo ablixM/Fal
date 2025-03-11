@@ -22,6 +22,7 @@ export function Navbar() {
     { name: "Contact-Us", path: "/contact" },
   ];
   const navItemsMobile: NavItem[] = [
+    { name: "Home", path: "/" },
     { name: "Services", path: "/services" },
     { name: "Products", path: "/products" },
     { name: "About-Us", path: "/about" },
@@ -97,13 +98,15 @@ export function Navbar() {
       variants={navbarVariants}
       initial="light"
       animate={isMenuOpen ? "dark" : "light"}
-      className="w-full  text-black z-40 fixed top-0 left-0 right-0"
+      className="w-full  z-40 fixed top-0 left-0 right-0"
     >
       <div className="max-w-screen-4xl mx-auto px-4 md:px-12 py-3 flex justify-between items-center">
         {/* Logo */}
         <div className="flex items-center">
           <Link to="/" className=" transition-colors duration-500">
-            <span className="text-amber-500 font-medium text-xl">EGIM</span>
+            <span className="text-[var(--color-secondary)] font-normal text-xl">
+              FAHL
+            </span>
           </Link>
         </div>
 
@@ -114,8 +117,10 @@ export function Navbar() {
               key={item.name}
               to={item.path}
               className={`${
-                isMenuOpen ? "text-white" : "text-black"
-              } font-medium text-lg transition-colors duration-500`}
+                isMenuOpen
+                  ? "text-[var(--color-primary)]"
+                  : "text-[var(--color-secondary)]"
+              } font-normal text-lg transition-colors duration-500`}
               lineHeight="1.2"
             >
               {item.name}
@@ -126,7 +131,9 @@ export function Navbar() {
         {/* Mobile Menu Button */}
         <button
           className={`md:hidden text-md uppercase tracking-wider transition-colors duration-500 ${
-            isMenuOpen ? "text-amber-500" : "text-black"
+            isMenuOpen
+              ? "text-[var(--color-primary)]"
+              : "text-[var(--color-secondary)]"
           }`}
           onClick={toggleMenu}
         >
@@ -138,7 +145,7 @@ export function Navbar() {
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
-            className="fixed inset-0 bg-neutral-900 z-30 flex flex-col md:hidden h-screen overflow-hidden"
+            className="fixed inset-0 bg-[var(--color-secondary)] z-30 flex flex-col md:hidden h-screen overflow-hidden"
             variants={overlayVariants}
             initial="closed"
             animate="open"
@@ -148,15 +155,15 @@ export function Navbar() {
               {/* Logo in mobile menu */}
               <div className="flex items-center">
                 <Link to="/">
-                  <span className="text-amber-500 font-medium text-xl">
-                    EGIM
+                  <span className="text-[var(--color-primary)] font-medium text-xl">
+                    FAHL
                   </span>
                 </Link>
               </div>
 
               {/* Close button */}
               <button
-                className="text-gray-500 text-md uppercase tracking-wider"
+                className="text-[var(--color-primary)] text-md uppercase tracking-wider"
                 onClick={toggleMenu}
               >
                 CLOSE
@@ -164,7 +171,7 @@ export function Navbar() {
             </div>
 
             {/* Menu items - vertical layout with animation */}
-            <motion.nav className="flex flex-col px-4 bg-neutral-900 h-screen items-start justify-center ml-12">
+            <motion.nav className="flex flex-col px-4 bg-[var(--color-secondary)] h-screen items-start justify-center ml-12">
               {navItemsMobile.map((item, index) => (
                 <motion.div
                   key={item.name}
@@ -174,7 +181,7 @@ export function Navbar() {
                 >
                   <Link
                     to={item.path}
-                    className="text-gray-200 text-4xl sm:text-6xl text-left font-medium tracking-wide block transition-colors duration-300 hover:text-amber-500"
+                    className="text-[var(--color-primary)] font-inter font-normal uppercase text-5xl sm:text-6xl text-left  tracking-wide block transition-colors duration-300 hover:text-primary"
                     onClick={toggleMenu}
                   >
                     {item.name}
