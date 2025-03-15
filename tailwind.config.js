@@ -24,13 +24,13 @@ export default {
       "3xl": "1800px",
       "4xl": "2000px",
     },
-    colors: {
-      primary: "#F5F5DC",
-      secondary: "#17213C",
-      tertiary: "#0F172A",
-      quaternary: "#3FFF7F",
-      quinary: "#3FFF7F",
-    },
+    // colors: {
+    //   primary: "#F5F5DC",
+    //   secondary: "#17213C",
+    //   tertiary: "#0F172A",
+    //   quaternary: "#3FFF7F",
+    //   quinary: "#3FFF7F",
+    // },
   },
   plugins: [],
 };

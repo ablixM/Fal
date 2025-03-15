@@ -211,7 +211,7 @@ export function Navbar() {
                 >
                   <Link
                     to={item.path}
-                    className="text-[var(--color-primary)] font-inter font-normal uppercase text-5xl sm:text-6xl text-left  tracking-wide block transition-colors duration-300 hover:text-primary"
+                    className="text-[var(--color-quinary)] font-inter font-normal uppercase text-4xl sm:text-6xl text-left  tracking-wide block transition-colors duration-300 hover:text-primary"
                     onClick={toggleMenu}
                   >
                     {item.name}

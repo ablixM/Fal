@@ -7,6 +7,12 @@ img {
   transform: translateX(0) scale(1.35);
 }
 
+html,
+body {
+  min-height: 100%;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
 html.lenis {
   height: auto;
 }
