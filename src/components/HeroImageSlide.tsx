@@ -154,7 +154,6 @@ function HeroImageSlide() {
       scrub: 1,
       pin: true,
       pinSpacing: true,
-      markers: true, // For debugging, remove in production
       onUpdate: (self) => {
         const progress = self.progress;
         const mainMove = progress * totalMove;
