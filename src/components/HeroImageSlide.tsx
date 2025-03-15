@@ -14,6 +14,9 @@ import img5 from "../assets/img5.jpeg";
 gsap.registerPlugin(useGSAP);
 gsap.registerPlugin(ScrollTrigger);
 
+// Define a threshold for significant window size changes
+const SIZE_CHANGE_THRESHOLD = 100; // pixels
+
 function HeroImageSlide() {
   // Create refs for DOM elements
   const stickySectionRef = useRef<HTMLElement>(null);
@@ -21,21 +24,41 @@ function HeroImageSlide() {
   const slidesContainerRef = useRef<HTMLDivElement>(null);
   const slidesRef = useRef<HTMLDivElement[]>([]);
   const [lenisReady, setLenisReady] = useState(false);
-  const [windowSize, setWindowSize] = useState({
+
+  // Store current and previous size in refs instead of state to avoid re-renders
+  const sizeRef = useRef({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
+  const prevSizeRef = useRef({
     width: window.innerWidth,
     height: window.innerHeight,
   });
 
-  // Update window size
+  // Update window size only if change is significant
   const handleResize = useCallback(() => {
     const timeoutId = setTimeout(() => {
-      setWindowSize({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      });
+      const newWidth = window.innerWidth;
+      const newHeight = window.innerHeight;
+      const prevWidth = prevSizeRef.current.width;
+      const prevHeight = prevSizeRef.current.height;
+
+      // Only update if the change is significant (exceeds threshold)
+      if (
+        Math.abs(newWidth - prevWidth) > SIZE_CHANGE_THRESHOLD ||
+        Math.abs(newHeight - prevHeight) > SIZE_CHANGE_THRESHOLD
+      ) {
+        prevSizeRef.current = { width: prevWidth, height: prevHeight };
+        sizeRef.current = { width: newWidth, height: newHeight };
+
+        // Force GSAP animations to recalculate for significant size changes
+        if (lenisReady) {
+          setupGSAPAnimations();
+        }
+      }
     }, 200);
     return () => clearTimeout(timeoutId);
-  }, []);
+  }, [lenisReady]);
 
   // Setup resize listener
   useEffect(() => {
@@ -195,13 +218,24 @@ function HeroImageSlide() {
       // Cleanup
       observer.disconnect();
     };
-  }, [lenisReady, windowSize]); // Add windowSize as dependency
+  }, [lenisReady]);
 
-  // Run setup when dependencies change
+  // Run setup when component mounts and lenisReady changes
   useEffect(() => {
     setupGSAPAnimations();
+
+    // Add event listener for orientation changes which are significant enough to require recalculation
+    const handleOrientationChange = () => {
+      setTimeout(() => {
+        setupGSAPAnimations();
+      }, 300); // Delay to ensure dimensions have updated
+    };
+
+    window.addEventListener("orientationchange", handleOrientationChange);
+
     return () => {
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+      window.removeEventListener("orientationchange", handleOrientationChange);
     };
   }, [setupGSAPAnimations]);
 
