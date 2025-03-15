@@ -15,41 +15,24 @@ function Layout() {
       orientation: "vertical",
       gestureOrientation: "vertical",
       smoothWheel: true,
-      touchMultiplier: 1.2,
+      touchMultiplier: 1.5,
       wheelMultiplier: 1.0,
-      touchInertiaMultiplier: 0.4,
-      syncTouch: true,
+      touchInertiaMultiplier: 0.6,
     });
 
-    let isTouching = false;
-
-    document.addEventListener(
-      "touchstart",
-      () => {
-        isTouching = true;
-      },
-      { passive: true }
-    );
-
-    document.addEventListener(
-      "touchend",
-      () => {
-        isTouching = false;
-      },
-      { passive: true }
-    );
-
+    // Integrate Lenis with GSAP
     gsap.ticker.add((time) => {
-      if (!isTouching || lenis.velocity < 5) {
-        lenis.raf(time * 1000);
-      }
+      lenis.raf(time * 1000);
     });
 
+    // Update ScrollTrigger on scroll
     lenis.on("scroll", ScrollTrigger.update);
 
+    // Prevent lag during scroll
     gsap.ticker.lagSmoothing(0);
 
     return () => {
+      // Cleanup
       gsap.ticker.remove(lenis.raf);
       lenis.destroy();
     };
