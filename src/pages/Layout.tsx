@@ -11,7 +11,7 @@ function Layout() {
   useEffect(() => {
     const lenis = new Lenis({
       duration: 1.2,
-      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      easing: (t: number) => gsap.parseEase("power2.out")(t),
       orientation: "vertical",
       gestureOrientation: "vertical",
       smoothWheel: true,

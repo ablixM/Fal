@@ -44,10 +44,9 @@ function PageTransition({ children }: PageTransitionProps) {
     });
 
     gsap.to(".overlay-2", {
-      duration: 1.5,
-      opacity: 0,
-      ease: customEase,
-      delay: 0.2,
+      xPercent: 100,
+      duration: 0.8,
+      ease: "power2.out",
     });
 
     return tl;

@@ -26,28 +26,16 @@ function HeroImageSlide() {
     height: window.innerHeight,
   });
 
-  // Debounce function to prevent too many resize calculations
-  const debounce = <T extends (...args: unknown[]) => unknown>(
-    func: T,
-    wait: number
-  ): ((...args: Parameters<T>) => void) => {
-    let timeout: ReturnType<typeof setTimeout>;
-    return (...args: Parameters<T>) => {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => func(...args), wait);
-    };
-  };
-
   // Update window size
-  const handleResize = useCallback(
-    debounce(() => {
+  const handleResize = useCallback(() => {
+    const timeoutId = setTimeout(() => {
       setWindowSize({
         width: window.innerWidth,
         height: window.innerHeight,
       });
-    }, 200),
-    []
-  );
+    }, 200);
+    return () => clearTimeout(timeoutId);
+  }, []);
 
   // Setup resize listener
   useEffect(() => {
@@ -173,6 +161,7 @@ function HeroImageSlide() {
 
         gsap.set(slidesContainer, {
           x: -mainMove,
+          ease: "power2.out",
         });
 
         const currentSlide = Math.floor(mainMove / slideWidth);
@@ -188,11 +177,13 @@ function HeroImageSlide() {
               gsap.set(image, {
                 x: parallaxAmount,
                 scale: 1.35,
+                ease: "power2.out",
               });
             } else {
               gsap.set(image, {
                 x: 0,
                 scale: 1.35,
+                ease: "power2.out",
               });
             }
           }
