@@ -151,16 +151,21 @@ function HeroImageSlide() {
       trigger: stickySectionRef.current,
       start: "top top",
       end: `+=${stickyHeight}px`,
-      scrub: 1,
+      scrub: 0.5,
       pin: true,
       pinSpacing: true,
+      fastScrollEnd: true,
+      preventOverlaps: true,
+      invalidateOnRefresh: true,
       onUpdate: (self) => {
+        // Prevent updates during very fast scrolling on touch devices
+        if (self.getVelocity() > 1000) return;
+
         const progress = self.progress;
         const mainMove = progress * totalMove;
 
         gsap.set(slidesContainer, {
           x: -mainMove,
-          ease: "power2.out",
         });
 
         const currentSlide = Math.floor(mainMove / slideWidth);
@@ -176,13 +181,11 @@ function HeroImageSlide() {
               gsap.set(image, {
                 x: parallaxAmount,
                 scale: 1.35,
-                ease: "power2.out",
               });
             } else {
               gsap.set(image, {
                 x: 0,
                 scale: 1.35,
-                ease: "power2.out",
               });
             }
           }
