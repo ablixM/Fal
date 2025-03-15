@@ -48,25 +48,6 @@ section {
   overflow: hidden;
 }
 
-section.outro {
-  background-color: #141414;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  min-height: 100vh; /* Ensure it's at least a full viewport height */
-  padding: clamp(1.5rem, 4vw, 3rem);
-}
-
-.outro h1 {
-  color: #fff;
-  text-transform: uppercase;
-  font-size: clamp(2rem, 5vw, 60px);
-  font-weight: 900;
-  letter-spacing: clamp(-1px, -0.15vw, -2px);
-  line-height: 1.1;
-}
-
 section.sticky {
   background-color: transparent;
   z-index: 1; /* Ensure it's above other content when pinned */
@@ -132,10 +113,6 @@ section.sticky {
     font-size: clamp(2rem, 6vw, 3rem);
     letter-spacing: -1px;
   }
-
-  .outro h1 {
-    font-size: clamp(1.75rem, 4vw, 2.5rem);
-  }
 }
 
 /* Medium devices (tablets) */
@@ -147,10 +124,6 @@ section.sticky {
   .title h1 {
     font-size: clamp(2.5rem, 7vw, 4rem);
   }
-
-  .outro h1 {
-    font-size: clamp(2rem, 5vw, 3rem);
-  }
 }
 
 /* Landscape orientation adjustments */
@@ -161,9 +134,5 @@ section.sticky {
 
   .title h1 {
     font-size: clamp(1.75rem, 5vw, 2.5rem);
-  }
-
-  .outro h1 {
-    font-size: clamp(1.5rem, 4vw, 2rem);
   }
 }

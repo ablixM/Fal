@@ -152,6 +152,10 @@ function HeroImageSlide() {
       start: "top top",
       end: `+=${stickyHeight}px`,
       scrub: 1,
+      fastScrollEnd: true,
+      preventOverlaps: true,
+      invalidateOnRefresh: true,
+
       pin: true,
       pinSpacing: true,
       onUpdate: (self) => {
@@ -281,9 +285,6 @@ function HeroImageSlide() {
             </div>
           </div>
         </div>
-      </section>
-      <section className="outro">
-        <h1>Shaping timeless spaces with contemporary vision</h1>
       </section>
     </div>
   );
