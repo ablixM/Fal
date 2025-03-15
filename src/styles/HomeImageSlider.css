@@ -7,12 +7,6 @@ img {
   transform: translateX(0) scale(1.35);
 }
 
-html,
-body {
-  min-height: 100%;
-  overflow-x: hidden; /* Prevent horizontal scrolling */
-}
-
 html.lenis {
   height: auto;
 }
@@ -44,7 +38,7 @@ section {
   position: relative;
   width: 100vw;
   height: 100vh;
-  padding: clamp(1rem, 2vw, 1.5em);
+
   overflow: hidden;
 }
 

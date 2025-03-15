@@ -152,9 +152,6 @@ function HeroImageSlide() {
       start: "top top",
       end: `+=${stickyHeight}px`,
       scrub: 1,
-      fastScrollEnd: true,
-      preventOverlaps: true,
-      invalidateOnRefresh: true,
 
       pin: true,
       pinSpacing: true,
@@ -193,9 +190,6 @@ function HeroImageSlide() {
         });
       },
     });
-
-    // Log for debugging
-    console.log("ScrollTrigger created:");
 
     return () => {
       // Cleanup

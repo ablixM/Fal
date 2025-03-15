@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { FlipLink } from "./FlipLink";
@@ -8,8 +8,35 @@ interface NavItem {
   path: string;
 }
 
+function useScrollDirection() {
+  const [isVisible, setIsVisible] = useState(true);
+  const [prevScrollY, setPrevScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      const scrollingDown = currentScrollY > prevScrollY;
+
+      // Only hide navbar after scrolling down 50px
+      if (scrollingDown && currentScrollY > 50) {
+        setIsVisible(false);
+      } else {
+        setIsVisible(true);
+      }
+
+      setPrevScrollY(currentScrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [prevScrollY]);
+
+  return isVisible;
+}
+
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const isVisible = useScrollDirection();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -33,18 +60,20 @@ export function Navbar() {
   // Shared transition properties for consistent animation
   const transitionProps = {
     type: "tween",
-    ease: "easeInOut",
-    duration: 0.3, // Match this with the CSS duration
+    ease: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    duration: 0.6,
   };
 
   // Main navbar animation variants
   const navbarVariants = {
-    light: {
-      backgroundColor: "transparent",
+    visible: {
+      y: 0,
+      opacity: 1,
       transition: transitionProps,
     },
-    dark: {
-      backgroundColor: "transparent",
+    hidden: {
+      y: -100,
+      opacity: 0,
       transition: transitionProps,
     },
   };
@@ -97,9 +126,9 @@ export function Navbar() {
   return (
     <motion.header
       variants={navbarVariants}
-      initial="light"
-      animate={isMenuOpen ? "dark" : "light"}
-      className="w-full  z-40 fixed top-0 left-0 right-0 "
+      initial="visible"
+      animate={isVisible ? "visible" : "hidden"}
+      className="w-full z-40 fixed top-0 left-0 right-0"
     >
       <div className="max-w-screen-4xl mx-auto px-4 md:px-12 py-3 flex justify-between items-center bg-primary">
         {/* Logo */}
