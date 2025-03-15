@@ -1,6 +1,5 @@
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import Lenis from "lenis";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import { useRef, useEffect, useState, useCallback } from "react";
 import "../styles/HomeImageSlider.css"; // Import the CSS
@@ -58,29 +57,6 @@ function HeroImageSlide() {
 
   // Setup smooth scrolling with Lenis
   useEffect(() => {
-    // Make sure to use the correct Lenis setup
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: "vertical",
-      gestureOrientation: "vertical",
-      smoothWheel: true,
-    });
-
-    // Integrate Lenis with GSAP
-    function raf(time: number) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-
-    requestAnimationFrame(raf);
-
-    lenis.on("scroll", () => {
-      ScrollTrigger.update();
-    });
-
-    gsap.ticker.lagSmoothing(0);
-
     // Set the scrolling behavior
     document.documentElement.style.overflowY = "auto";
     document.body.style.overflowY = "auto";
@@ -92,7 +68,6 @@ function HeroImageSlide() {
 
     return () => {
       // Cleanup
-      lenis.destroy();
       document.documentElement.style.overflowY = "";
       document.body.style.overflowY = "";
       document.documentElement.style.height = "";

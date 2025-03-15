@@ -12,6 +12,7 @@
   "dependencies": {
     "@gsap/react": "^2.1.2",
     "@stitches/react": "^1.2.8",
+    "@studio-freight/lenis": "^1.0.42",
     "@tailwindcss/vite": "^4.0.12",
     "framer-motion": "^12.4.10",
     "lenis": "^1.2.3",
