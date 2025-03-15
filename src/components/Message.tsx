@@ -8,67 +8,74 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
+// Define a threshold for significant window size changes
+const SIZE_CHANGE_THRESHOLD = 50; // pixels
+
 interface MessageProps {
   profileImage?: string;
 }
 
-function Message({ profileImage = "/src/assets/FALCH.png" }: MessageProps) {
+function Message({ profileImage = "/FALCH.png" }: MessageProps) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const quoteRef = useRef<HTMLDivElement>(null);
   const [letterElements, setLetterElements] = useState<HTMLSpanElement[]>([]);
-  const [windowWidth, setWindowWidth] = useState<number>(
-    typeof window !== "undefined" ? window.innerWidth : 0
-  );
-  // Use ref instead of state to avoid re-renders and infinite loops
+
+  // Use refs instead of state to avoid re-renders
+  const windowSizeRef = useRef<{ width: number; height: number }>({
+    width: typeof window !== "undefined" ? window.innerWidth : 0,
+    height: typeof window !== "undefined" ? window.innerHeight : 0,
+  });
+
+  // Use ref to track ScrollTrigger instance to avoid re-renders
   const scrollTriggerRef = useRef<ScrollTrigger | null>(null);
-  // Track if animation needs to be recalculated
-  const needsRecalculation = useRef<boolean>(false);
+
+  // Track if animation needs to be updated
+  const needsUpdate = useRef<boolean>(true);
 
   const quote =
     "With a passion for premium products and global trade, I founded Fal Trading to connect businesses with the world's finest coffee, cashews, and dates. Our commitment to quality and trust ensures that every product we deliver meets the highest standards.";
 
-  // Responsive animation settings based on screen size
+  // Responsive animation settings based on screen size - uses ref to avoid re-renders
   const getAnimationSettings = useCallback(() => {
+    const currentWidth = windowSizeRef.current.width;
+
     // Mobile settings
-    if (windowWidth < 640) {
+    if (currentWidth < 640) {
       return {
-        staggerAmount: 0.002,
-        duration: 0.08,
-        startPoint: "top bottom",
-        endPoint: "bottom top-=200",
-        // Smaller batch size for mobile (reveal fewer letters at once)
-        batchSize: 2,
-        // Shorter viewport means fewer letters visible at once
-        visibleBatches: Math.ceil(letterElements.length / 5),
+        // Viewport scroll points
+        startTrigger: "top 85%", // Start revealing when section top reaches 85% down the viewport
+        endTrigger: "center 30%", // Complete reveal when section center reaches 30% down the viewport
+        // Animation parameters
+        batchSize: 3,
+        maxOpacity: 1,
+        minOpacity: 0.1,
       };
     }
     // Tablet settings
-    else if (windowWidth < 1024) {
+    else if (currentWidth < 1024) {
       return {
-        staggerAmount: 0.0025,
-        duration: 0.1,
-        startPoint: "top bottom",
-        endPoint: "bottom top-=100",
-        // Medium batch size for tablets
-        batchSize: 3,
-        // Medium viewport means moderate number of letters visible
-        visibleBatches: Math.ceil(letterElements.length / 4),
+        // Slightly different trigger points for tablets
+        startTrigger: "top 80%",
+        endTrigger: "center 35%",
+        // Animation parameters
+        batchSize: 4,
+        maxOpacity: 1,
+        minOpacity: 0.1,
       };
     }
     // Desktop settings
     else {
       return {
-        staggerAmount: 0.003,
-        duration: 0.12,
-        startPoint: "top bottom",
-        endPoint: "bottom top",
-        // Larger batch size for desktop (reveal more letters at once)
-        batchSize: 4,
-        // Larger viewport means more letters visible at once
-        visibleBatches: Math.ceil(letterElements.length / 3),
+        // More space to scroll on desktop
+        startTrigger: "top 75%",
+        endTrigger: "center 40%",
+        // Animation parameters
+        batchSize: 5,
+        maxOpacity: 1,
+        minOpacity: 0.1,
       };
     }
-  }, [windowWidth, letterElements.length]);
+  }, []);
 
   // Calculate letter batches for more efficient animation
   const getLetterBatches = useCallback(() => {
@@ -79,16 +86,48 @@ function Message({ profileImage = "/src/assets/FALCH.png" }: MessageProps) {
 
     // Group letters into batches for more efficient animation
     const batches = [];
-    for (let i = 0; i < letterElements.length; i += batchSize) {
-      batches.push(letterElements.slice(i, i + batchSize));
+
+    // Create word-aware batches (keep words together when possible)
+    let currentBatch: HTMLSpanElement[] = [];
+    let currentWordIndex = -1;
+
+    letterElements.forEach((letter) => {
+      // Get the parent word element
+      const wordEl = letter.parentElement;
+      if (!wordEl) return;
+
+      // Get the word index from the key attribute
+      const keyAttr = wordEl.getAttribute("data-word-index");
+      const wordIndex = keyAttr ? parseInt(keyAttr, 10) : -1;
+
+      // If we're starting a new word and the current batch is getting large
+      if (wordIndex !== currentWordIndex && currentBatch.length >= batchSize) {
+        batches.push([...currentBatch]);
+        currentBatch = [];
+      }
+
+      currentBatch.push(letter);
+      currentWordIndex = wordIndex;
+
+      // Cap batch size for long words
+      if (currentBatch.length >= batchSize * 2) {
+        batches.push([...currentBatch]);
+        currentBatch = [];
+      }
+    });
+
+    // Add the last batch if it's not empty
+    if (currentBatch.length > 0) {
+      batches.push(currentBatch);
     }
 
     return batches;
   }, [letterElements, getAnimationSettings]);
 
-  // Setup animation
+  // Setup scroll-based animation
   const setupAnimation = useCallback(() => {
-    if (letterElements.length === 0 || !quoteRef.current) return;
+    if (letterElements.length === 0 || !quoteRef.current || !sectionRef.current)
+      return;
 
     // Clear any existing ScrollTrigger
     if (scrollTriggerRef.current) {
@@ -99,65 +138,92 @@ function Message({ profileImage = "/src/assets/FALCH.png" }: MessageProps) {
     const settings = getAnimationSettings();
     const batches = getLetterBatches();
 
-    // Calculate visible percentage per batch
-    const totalBatches = batches.length;
-    const visiblePercentage = Math.min(
-      1,
-      settings.visibleBatches / totalBatches
-    );
+    // Set initial opacity
+    letterElements.forEach((letter) => {
+      gsap.set(letter, { opacity: settings.minOpacity });
+    });
 
-    // Create a new timeline with ScrollTrigger
-    const scrollTriggerConfig = {
+    // Create ScrollTrigger for scroll-based reveal
+    const st = ScrollTrigger.create({
       id: "message-text-reveal",
-      trigger: quoteRef.current,
-      start: settings.startPoint,
-      end: settings.endPoint,
-      scrub: true,
+      trigger: sectionRef.current,
+      start: settings.startTrigger,
+      end: settings.endTrigger,
+      scrub: 0.3, // Smooth scrubbing effect
       markers: false,
-      toggleActions: "play reverse play reverse", // Ensures animation works in both directions
-      onUpdate: (self: { progress: number }) => {
+      onUpdate: (self) => {
         // Calculate how many batches should be visible based on scroll progress
         const progress = self.progress;
-        const visibleCount = Math.ceil(
-          totalBatches * progress * visiblePercentage
-        );
+        const totalBatches = batches.length;
 
-        // Update letter visibility directly for optimal performance
+        // Determine how many batches to fully reveal based on progress
+        const fullyRevealedBatches = Math.floor(progress * totalBatches);
+
+        // Get the partially revealed batch
+        const partialBatchIndex = fullyRevealedBatches;
+        const partialProgress = progress * totalBatches - fullyRevealedBatches;
+
+        // Update each batch based on its position relative to scroll progress
         batches.forEach((batch, index) => {
-          const shouldBeVisible = index < visibleCount;
+          let targetOpacity;
+
+          if (index < fullyRevealedBatches) {
+            // Batches that should be fully revealed
+            targetOpacity = settings.maxOpacity;
+          } else if (index === partialBatchIndex) {
+            // The batch that's partially revealed
+            targetOpacity =
+              settings.minOpacity +
+              (settings.maxOpacity - settings.minOpacity) * partialProgress;
+          } else {
+            // Batches that should remain hidden
+            targetOpacity = settings.minOpacity;
+          }
+
+          // Apply the opacity to each letter in the batch
           batch.forEach((letter) => {
             gsap.to(letter, {
-              opacity: shouldBeVisible ? 1 : 0.2,
+              opacity: targetOpacity,
               duration: 0.1,
               overwrite: true,
             });
           });
         });
       },
-    };
-
-    // Create ScrollTrigger
-    gsap.timeline({
-      scrollTrigger: scrollTriggerConfig,
     });
 
-    // Initial setup of all letters' opacity
-    letterElements.forEach((letter) => {
-      gsap.set(letter, { opacity: 0.2 });
-    });
+    // Store the ScrollTrigger instance in the ref
+    scrollTriggerRef.current = st;
 
-    needsRecalculation.current = false;
+    needsUpdate.current = false;
   }, [letterElements, getAnimationSettings, getLetterBatches]);
 
-  // Handle window resize
+  // Handle window resize without causing re-renders
   useEffect(() => {
     const handleResize = () => {
       const newWidth = window.innerWidth;
+      const newHeight = window.innerHeight;
+      const currentWidth = windowSizeRef.current.width;
+      const currentHeight = windowSizeRef.current.height;
 
       // Only update if width changed significantly (prevents micro-adjustments)
-      if (Math.abs(newWidth - windowWidth) > 20) {
-        setWindowWidth(newWidth);
-        needsRecalculation.current = true;
+      if (
+        Math.abs(newWidth - currentWidth) > SIZE_CHANGE_THRESHOLD ||
+        Math.abs(newHeight - currentHeight) > SIZE_CHANGE_THRESHOLD
+      ) {
+        // Update the ref without causing a re-render
+        windowSizeRef.current = { width: newWidth, height: newHeight };
+
+        // Mark that animation needs to be updated
+        needsUpdate.current = true;
+
+        // Refresh ScrollTrigger to adapt to new size
+        ScrollTrigger.refresh();
+
+        // If significant change, rebuild the animation
+        if (letterElements.length > 0) {
+          setupAnimation();
+        }
       }
     };
 
@@ -165,22 +231,34 @@ function Message({ profileImage = "/src/assets/FALCH.png" }: MessageProps) {
     let resizeTimer: number;
     const debouncedResize = () => {
       clearTimeout(resizeTimer);
-      resizeTimer = window.setTimeout(handleResize, 100);
+      resizeTimer = window.setTimeout(handleResize, 200);
     };
 
     window.addEventListener("resize", debouncedResize);
+
+    // Add handling for orientation changes
+    const handleOrientationChange = () => {
+      setTimeout(() => {
+        const newWidth = window.innerWidth;
+        const newHeight = window.innerHeight;
+        windowSizeRef.current = { width: newWidth, height: newHeight };
+        needsUpdate.current = true;
+        setupAnimation();
+      }, 300);
+    };
+
+    window.addEventListener("orientationchange", handleOrientationChange);
+
     return () => {
       window.removeEventListener("resize", debouncedResize);
+      window.removeEventListener("orientationchange", handleOrientationChange);
       clearTimeout(resizeTimer);
     };
-  }, [windowWidth]);
+  }, [letterElements, setupAnimation]);
 
-  // Re-setup animation when letterElements or window size changes
+  // Setup animation when letterElements change or component mounts
   useEffect(() => {
-    if (
-      letterElements.length > 0 &&
-      (needsRecalculation.current || !scrollTriggerRef.current)
-    ) {
+    if (letterElements.length > 0 && needsUpdate.current) {
       setupAnimation();
     }
 
@@ -191,7 +269,7 @@ function Message({ profileImage = "/src/assets/FALCH.png" }: MessageProps) {
         scrollTriggerRef.current = null;
       }
     };
-  }, [letterElements, windowWidth, setupAnimation]);
+  }, [letterElements, setupAnimation]);
 
   // Collect letter elements after component mounts
   useEffect(() => {
@@ -213,7 +291,11 @@ function Message({ profileImage = "/src/assets/FALCH.png" }: MessageProps) {
   const splitWords = (phrase: string) => {
     const words = phrase.split(" ");
     return words.map((word, i) => (
-      <span key={`word_${i}`} className="inline-block mr-2 mb-1">
+      <span
+        key={`word_${i}`}
+        data-word-index={i}
+        className="inline-block mr-2 mb-1"
+      >
         {splitLetters(word)}
       </span>
     ));
@@ -223,7 +305,7 @@ function Message({ profileImage = "/src/assets/FALCH.png" }: MessageProps) {
     return word.split("").map((letter, i) => (
       <span
         key={`letter_${i}`}
-        className="letter opacity-20 inline-block transition-opacity duration-300"
+        className="letter opacity-10 inline-block transition-opacity duration-100"
       >
         {letter}
       </span>
