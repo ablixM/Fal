@@ -25,9 +25,9 @@ export default {
       "4xl": "2000px",
     },
     colors: {
-      primary: "#3FFF7F",
+      primary: "#F5F5DC",
       secondary: "#17213C",
-      tertiary: "#18A146",
+      tertiary: "#0F172A",
       quaternary: "#3FFF7F",
       quinary: "#3FFF7F",
     },

@@ -1,34 +1,30 @@
 @import "tailwindcss";
-@import './globals.css';
-@import './landingpage.css';
-
+@import "./globals.css";
+@import "./landingpage.css";
+@import "./HomeImageSlider.css";
 @theme {
-
   --font-body: Inter, sans-serif;
-    --color-*: initial;
-    --color-primary: #3FFF7F;
-    --color-secondary: #17213C;
-    --color-tertiary: #18A146;
-    --color-quaternary: #3FFF7F;
-    --color-quinary: #3FFF7F;
-    --font-poppins: "Poppins";
-    --font-inter: "Inter";
+  --color-*: initial;
+  --color-primary: #f5f5dc;
+  --color-secondary: #17213c;
+  --color-tertiary: #18a146;
+  --color-quaternary: #0f172a;
+  --color-quinary: #3fff7f;
+  --font-poppins: "Poppins";
+  --font-inter: "Inter";
 
-
-    --width-9xl: 140rem;
-    --width-8xl: 120rem;
-    --width-7xl: 112rem;
-    --width-6xl: 96rem;
-    --width-5xl: 80rem;
-    --width-4xl: 64rem;
-    --width-3xl: 48rem;
-    --width-2xl: 32rem;
-    --width-xl: 16rem;
-  }
-
+  --width-9xl: 140rem;
+  --width-8xl: 120rem;
+  --width-7xl: 112rem;
+  --width-6xl: 96rem;
+  --width-5xl: 80rem;
+  --width-4xl: 64rem;
+  --width-3xl: 48rem;
+  --width-2xl: 32rem;
+  --width-xl: 16rem;
+}
 
 body {
- 
   overflow: hidden;
   width: 100vw;
   height: 100vh;
@@ -42,7 +38,6 @@ body {
   height: 100vh;
   z-index: 999;
   display: flex;
-
 }
 .overlay-2 {
   position: fixed;
@@ -50,7 +45,6 @@ body {
   height: 100vh;
   z-index: 999;
   display: flex;
-
 }
 
 .bar {
