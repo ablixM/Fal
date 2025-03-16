@@ -115,7 +115,7 @@ function HeroImageSlide() {
       const title = slide.querySelector(".title h1");
       const subtitle = slide.querySelector(".title .subtitle");
       if (title) gsap.set(title, { y: -200 });
-      if (subtitle) gsap.set(subtitle, { y: -200 });
+      if (subtitle) gsap.set(subtitle, { y: -250 });
     });
 
     let currentVisibleIndex: number | null = null;
