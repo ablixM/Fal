@@ -115,7 +115,7 @@ function HeroImageSlide() {
       const title = slide.querySelector(".title h1");
       const subtitle = slide.querySelector(".title .subtitle");
       if (title) gsap.set(title, { y: -200 });
-      if (subtitle) gsap.set(subtitle, { y: -250 });
+      if (subtitle) gsap.set(subtitle, { y: -200 });
     });
 
     let currentVisibleIndex: number | null = null;
@@ -147,7 +147,7 @@ function HeroImageSlide() {
             subtitles.forEach((subtitle, index) => {
               if (subtitle) {
                 gsap.to(subtitle, {
-                  y: index === currentIndex ? 0 : -250,
+                  y: index === currentIndex ? 0 : -200,
                   duration: 0.5,
                   delay: 0.1, // Slight delay for staggered effect
                   ease: "power2.out",
@@ -175,7 +175,7 @@ function HeroImageSlide() {
             subtitles.forEach((subtitle, index) => {
               if (subtitle) {
                 gsap.to(subtitle, {
-                  y: index === prevIndex ? 0 : -250,
+                  y: index === prevIndex ? 0 : -200,
                   duration: 0.5,
                   ease: "power2.out",
                   overwrite: true,
@@ -286,7 +286,9 @@ function HeroImageSlide() {
                   Lasting Impact
                 </h1>
                 <div className="subtitle">
-                  Elevate your space with timeless design and sophistication
+                  Elevate your space with timeless
+                  <br />
+                  design and sophistication
                 </div>
               </div>
             </div>
@@ -301,7 +303,9 @@ function HeroImageSlide() {
                   Smart Living
                 </h1>
                 <div className="subtitle">
-                  Seamlessly blend comfort and innovation in your home
+                  Seamlessly blend comfort
+                  <br />
+                  and innovation in your home
                 </div>
               </div>
             </div>
@@ -316,7 +320,9 @@ function HeroImageSlide() {
                   Warm Details
                 </h1>
                 <div className="subtitle">
-                  Contemporary minimalism with thoughtful touches
+                  Contemporary minimalism
+                  <br />
+                  with thoughtful touches
                 </div>
               </div>
             </div>

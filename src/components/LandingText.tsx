@@ -139,16 +139,15 @@ function LandingText() {
   return (
     <div
       ref={headerRef}
-      className="header  mt-16 max-w-[--width-8xl] w-full mx-auto flex flex-col lg:flex-row justify-between items-center lg:items-start px-8"
+      className="header mt-10 sm:mt-16 max-w-[--width-8xl] w-full mx-auto flex flex-col lg:flex-row justify-between items-center lg:items-start px-8"
     >
       <div className="col ">
         <h1
           ref={title1Ref}
           className="title-1 font-normal font-inter lg:text-left text-center text-5xl sm:text-6xl md:text-7xl lg:text-8xl"
         >
-          EMPIRE GLOBAL <br />
-          INVESTMENT <br />
-          MANAGEMENT
+          FAL <br />
+          TRADING
         </h1>
       </div>
 

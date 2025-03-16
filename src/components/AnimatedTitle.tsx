@@ -160,7 +160,7 @@ function AnimatedTitle({ title1, title2 }: AnimatedTitleProps) {
       <div className="col w-full">
         <h1
           ref={title1Ref}
-          className="title-1 font-normal font-inter lg:text-center text-center text-5xl sm:text-6xl md:text-7xl lg:text-8xl"
+          className="title-1 font-semibold font-inter lg:text-left text-left text-5xl sm:text-6xl md:text-7xl lg:text-8xl"
         >
           <br />
           {title1}
