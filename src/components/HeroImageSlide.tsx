@@ -115,7 +115,7 @@ function HeroImageSlide() {
       const title = slide.querySelector(".title h1");
       const subtitle = slide.querySelector(".title .subtitle");
       if (title) gsap.set(title, { y: -200 });
-      if (subtitle) gsap.set(subtitle, { y: -200 });
+      if (subtitle) gsap.set(subtitle, { y: -450 });
     });
 
     let currentVisibleIndex: number | null = null;
@@ -138,8 +138,9 @@ function HeroImageSlide() {
               if (title) {
                 gsap.to(title, {
                   y: index === currentIndex ? 0 : -200,
-                  duration: 0.5,
-                  ease: "power2.out",
+                  duration: 1,
+                  ease: (t: number) =>
+                    Math.min(1, 1.001 - Math.pow(2, -10 * t)),
                   overwrite: true,
                 });
               }
@@ -147,10 +148,11 @@ function HeroImageSlide() {
             subtitles.forEach((subtitle, index) => {
               if (subtitle) {
                 gsap.to(subtitle, {
-                  y: index === currentIndex ? 0 : -200,
-                  duration: 0.5,
+                  y: index === currentIndex ? 0 : -450,
+                  duration: 1,
                   delay: 0.1, // Slight delay for staggered effect
-                  ease: "power2.out",
+                  ease: (t: number) =>
+                    Math.min(1, 1.001 - Math.pow(2, -10 * t)),
                   overwrite: true,
                 });
               }
@@ -166,8 +168,9 @@ function HeroImageSlide() {
               if (title) {
                 gsap.to(title, {
                   y: index === prevIndex ? 0 : -200,
-                  duration: 0.5,
-                  ease: "power2.out",
+                  duration: 1,
+                  ease: (t: number) =>
+                    Math.min(1, 1.001 - Math.pow(2, -10 * t)),
                   overwrite: true,
                 });
               }
@@ -175,9 +178,10 @@ function HeroImageSlide() {
             subtitles.forEach((subtitle, index) => {
               if (subtitle) {
                 gsap.to(subtitle, {
-                  y: index === prevIndex ? 0 : -200,
-                  duration: 0.5,
-                  ease: "power2.out",
+                  y: index === prevIndex ? 0 : -450,
+                  duration: 1,
+                  ease: (t: number) =>
+                    Math.min(1, 1.001 - Math.pow(2, -10 * t)),
                   overwrite: true,
                 });
               }
@@ -208,7 +212,7 @@ function HeroImageSlide() {
 
         gsap.set(slidesContainer, {
           x: -mainMove,
-          ease: "power2.out",
+          ease: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
         });
 
         const currentSlide = Math.floor(mainMove / slideWidth);
@@ -224,13 +228,13 @@ function HeroImageSlide() {
               gsap.set(image, {
                 x: parallaxAmount,
                 scale: 1.35,
-                ease: "power2.out",
+                ease: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
               });
             } else {
               gsap.set(image, {
                 x: 0,
                 scale: 1.35,
-                ease: "power2.out",
+                ease: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
               });
             }
           }
