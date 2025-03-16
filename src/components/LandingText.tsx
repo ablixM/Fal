@@ -3,6 +3,7 @@ import { useGSAP } from "@gsap/react";
 import SplitType from "split-type";
 import CustomEase from "gsap/CustomEase";
 import { useLayoutEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 gsap.registerPlugin(CustomEase);
 gsap.registerPlugin(useGSAP);
 
@@ -44,7 +45,7 @@ function LandingText() {
             amount: 0.5,
             from: "start",
           },
-          delay: 2.5,
+          delay: 0.5,
           onComplete: () => {
             hasAnimatedRef.current = true;
           },
@@ -151,14 +152,25 @@ function LandingText() {
         </h1>
       </div>
 
-      <div className="col ">
+      <div className="col flex flex-col items-end justify-end">
         <h2
           ref={title2Ref}
-          className="title-2 font-normal leading-tight p-0 lg:text-right text-center text-md sm:text-2xl lg:text-4xl"
+          className="title-2 font-normal leading-tight p-0 lg:text-right text-center text-md sm:text-xl md:text-2xl lg:text-3xl"
         >
           One of the leading holding groups of <br /> major industry companies
           in the <br /> <span className="text-red-500">UAE</span>
         </h2>
+        <div className="w-full">
+          <Link
+            to="/"
+            className="my-2 w-full inline-flex items-center space-x-2 sm:space-x-4 border border-secondary  px-5 sm:px-8 py-3 sm:py-4 text-secondary hover:bg-secondary/10 transition-all duration-300"
+          >
+            <span className="text-base sm:text-lg md:text-xl">
+              Explore our products
+            </span>
+            <span className="w-8  sm:w-32 md:w-40 h-[1px] bg-secondary"></span>
+          </Link>
+        </div>
       </div>
     </div>
   );

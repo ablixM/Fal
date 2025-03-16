@@ -113,7 +113,9 @@ function HeroImageSlide() {
     // Reset initial state for titles
     slides.forEach((slide) => {
       const title = slide.querySelector(".title h1");
+      const subtitle = slide.querySelector(".title .subtitle");
       if (title) gsap.set(title, { y: -200 });
+      if (subtitle) gsap.set(subtitle, { y: -200 });
     });
 
     let currentVisibleIndex: number | null = null;
@@ -126,6 +128,9 @@ function HeroImageSlide() {
           const titles = slides.map((slide) =>
             slide.querySelector(".title h1")
           );
+          const subtitles = slides.map((slide) =>
+            slide.querySelector(".title .subtitle")
+          );
 
           if (entry.intersectionRatio >= 0.25) {
             currentVisibleIndex = currentIndex;
@@ -134,6 +139,17 @@ function HeroImageSlide() {
                 gsap.to(title, {
                   y: index === currentIndex ? 0 : -200,
                   duration: 0.5,
+                  ease: "power2.out",
+                  overwrite: true,
+                });
+              }
+            });
+            subtitles.forEach((subtitle, index) => {
+              if (subtitle) {
+                gsap.to(subtitle, {
+                  y: index === currentIndex ? 0 : -250,
+                  duration: 0.5,
+                  delay: 0.1, // Slight delay for staggered effect
                   ease: "power2.out",
                   overwrite: true,
                 });
@@ -150,6 +166,16 @@ function HeroImageSlide() {
               if (title) {
                 gsap.to(title, {
                   y: index === prevIndex ? 0 : -200,
+                  duration: 0.5,
+                  ease: "power2.out",
+                  overwrite: true,
+                });
+              }
+            });
+            subtitles.forEach((subtitle, index) => {
+              if (subtitle) {
+                gsap.to(subtitle, {
+                  y: index === prevIndex ? 0 : -250,
                   duration: 0.5,
                   ease: "power2.out",
                   overwrite: true,
@@ -259,6 +285,9 @@ function HeroImageSlide() {
                   <br />
                   Lasting Impact
                 </h1>
+                <div className="subtitle">
+                  Elevate your space with timeless design and sophistication
+                </div>
               </div>
             </div>
             <div ref={(el) => addToSlidesRef(el, 1)} className="slide">
@@ -271,6 +300,9 @@ function HeroImageSlide() {
                   <br />
                   Smart Living
                 </h1>
+                <div className="subtitle">
+                  Seamlessly blend comfort and innovation in your home
+                </div>
               </div>
             </div>
             <div ref={(el) => addToSlidesRef(el, 2)} className="slide">
@@ -283,6 +315,9 @@ function HeroImageSlide() {
                   <br />
                   Warm Details
                 </h1>
+                <div className="subtitle">
+                  Contemporary minimalism with thoughtful touches
+                </div>
               </div>
             </div>
           </div>

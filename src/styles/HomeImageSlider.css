@@ -82,12 +82,34 @@ section.sticky {
   overflow: hidden;
 }
 
+/* Add gradient overlay */
+.img::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.2) 0%,
+    rgba(0, 0, 0, 0.6) 100%
+  );
+  z-index: 1;
+  pointer-events: none;
+}
+
+.img img {
+  position: relative;
+  z-index: 0;
+}
+
 .title {
   position: relative;
   width: max-content;
   height: auto;
   margin: clamp(1rem, 2vw, 1.5em);
-  margin-top: clamp(50px, 10vh, 100px);
+  margin-top: clamp(150px, 30vh, 250px); /* Moved lower */
   clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
   z-index: 2;
 }
@@ -103,10 +125,22 @@ section.sticky {
   will-change: transform;
 }
 
+/* Style for subheading */
+.subtitle {
+  position: relative;
+  color: #fff;
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  font-weight: 400;
+  margin-top: 10px;
+  opacity: 0.9;
+  will-change: transform;
+  transform: translateY(-200px);
+}
+
 /* Small devices (phones) */
 @media screen and (max-width: 640px) {
   .title {
-    margin-top: 50px;
+    margin-top: clamp(100px, 20vh, 150px);
   }
 
   .title h1 {
@@ -118,7 +152,7 @@ section.sticky {
 /* Medium devices (tablets) */
 @media screen and (min-width: 641px) and (max-width: 1024px) {
   .title {
-    margin-top: 75px;
+    margin-top: clamp(120px, 25vh, 200px);
   }
 
   .title h1 {
@@ -129,7 +163,7 @@ section.sticky {
 /* Landscape orientation adjustments */
 @media screen and (max-height: 500px) and (orientation: landscape) {
   .title {
-    margin-top: 30px;
+    margin-top: clamp(60px, 15vh, 100px);
   }
 
   .title h1 {

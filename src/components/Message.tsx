@@ -315,11 +315,11 @@ function Message({ profileImage = "/FALCH.png" }: MessageProps) {
   return (
     <div
       ref={sectionRef}
-      className="w-full bg-secondary  min-h-screen text-primary  flex items-center relative overflow"
+      className="w-full bg-secondary  md:min-h-screen text-primary  flex items-center relative overflow"
       id="message-section"
     >
       <div className="container mx-auto px-4 md:px-6 py-6 md:py-8 lg:py-24">
-        <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12 lg:gap-24">
+        <div className="flex flex-col lg:flex-row items-center gap-8 md:gap-12 lg:gap-24">
           {/* Left side - Title and Image */}
           <div className="flex flex-col items-start space-y-6 md:space-y-8 md:w-2/5 lg:w-1/3">
             <div className="text-start">
@@ -330,7 +330,7 @@ function Message({ profileImage = "/FALCH.png" }: MessageProps) {
                 The Vision Behind Fal Trading
               </p>
             </div>
-            <div className="relative overflow-hidden max-w-[350px] sm:max-w-[450px] w-full ">
+            <div className="relative overflow-hidden max-w-[350px] sm:max-w-[450px]  ">
               <img
                 src={profileImage}
                 alt="Fahl - Founder of Fal Trading"
@@ -340,16 +340,16 @@ function Message({ profileImage = "/FALCH.png" }: MessageProps) {
           </div>
 
           {/* Right side - Quote */}
-          <div className="md:w-3/5 lg:w-2/3 flex items-center">
-            <div className="flex flex-col px-4 sm:px-6 space-y-4 md:space-y-6">
+          <div className="w-full md:w-4/5 lg:w-2/3 flex items-center">
+            <div className="flex flex-col w-full px-0 sm:px-6 space-y-4 md:space-y-6">
               <div
                 ref={quoteRef}
-                className="text-lg sm:text-xl md:text-2xl lg:text-3xl leading-relaxed flex flex-wrap"
+                className="text-xl sm:text-2xl md:text-2xl lg:text-4xl leading-relaxed flex justify-center md:justify-start flex-wrap w-full"
                 id="message-quote"
               >
                 {splitWords(quote)}
               </div>
-              <div className="text-right">
+              <div className="sm:text-right">
                 <p className="text-lg sm:text-xl md:text-2xl font-bold">FAHL</p>
               </div>
               <div className="">
