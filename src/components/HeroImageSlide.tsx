@@ -8,8 +8,6 @@ import "../styles/HomeImageSlider.css"; // Import the CSS
 import img1 from "../assets/img1.jpeg";
 import img2 from "../assets/img2.jpeg";
 import img3 from "../assets/img3.jpeg";
-import img4 from "../assets/img4.jpeg";
-import img5 from "../assets/img5.jpeg";
 
 gsap.registerPlugin(useGSAP);
 gsap.registerPlugin(ScrollTrigger);
@@ -284,30 +282,6 @@ function HeroImageSlide() {
                   Modern Concrete
                   <br />
                   Warm Details
-                </h1>
-              </div>
-            </div>
-            <div ref={(el) => addToSlidesRef(el, 3)} className="slide">
-              <div className="img">
-                <img src={img4} alt="Curved Elements" />
-              </div>
-              <div className="title">
-                <h1>
-                  Curved Elements
-                  <br />
-                  Modern Flow
-                </h1>
-              </div>
-            </div>
-            <div ref={(el) => addToSlidesRef(el, 4)} className="slide">
-              <div className="img">
-                <img src={img5} alt="Minimal Design" />
-              </div>
-              <div className="title">
-                <h1>
-                  Minimal Design
-                  <br />
-                  Natural Light
                 </h1>
               </div>
             </div>

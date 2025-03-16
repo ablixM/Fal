@@ -25,11 +25,12 @@
 }
 
 body {
-  overflow: hidden;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  min-height: 100vh;
   background-color: var(--color-primary);
   font-family: "Poppins", "Inter";
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .overlay {

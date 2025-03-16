@@ -315,33 +315,33 @@ function Message({ profileImage = "/FALCH.png" }: MessageProps) {
   return (
     <div
       ref={sectionRef}
-      className="w-full bg-secondary text-primary min-h-screen flex items-center relative overflow-hidden"
+      className="w-full bg-secondary  min-h-screen text-primary  flex items-center relative overflow"
       id="message-section"
     >
-      <div className="container mx-auto px-4 md:px-8 py-12 md:py-16 lg:py-24">
-        <div className="flex flex-col md:flex-row items-start gap-8 md:gap-12 lg:gap-24">
+      <div className="container mx-auto px-4 md:px-6 py-6 md:py-8 lg:py-24">
+        <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12 lg:gap-24">
           {/* Left side - Title and Image */}
-          <div className="flex flex-col items-center space-y-6 md:space-y-8 md:w-2/5 lg:w-1/3">
-            <div>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2">
+          <div className="flex flex-col items-start space-y-6 md:space-y-8 md:w-2/5 lg:w-1/3">
+            <div className="text-start">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold mb-2">
                 MEET, FAHL
               </h2>
-              <p className="text-lg sm:text-xl md:text-2xl">
-                The Vision Behind Fal Trading"
+              <p className="text-md sm:text-lg  md:text-xl lg:text-2xl uppercase">
+                The Vision Behind Fal Trading
               </p>
             </div>
-            <div className="w-full max-w-[200px] sm:max-w-[250px] mx-auto md:mx-0 object-cover">
+            <div className="relative overflow-hidden max-w-[350px] sm:max-w-[450px] w-full ">
               <img
                 src={profileImage}
                 alt="Fahl - Founder of Fal Trading"
-                className="w-full h-auto rounded-sm"
+                className="w-full h-full object-cover object-center rounded-sm"
               />
             </div>
           </div>
 
           {/* Right side - Quote */}
           <div className="md:w-3/5 lg:w-2/3 flex items-center">
-            <div className="flex flex-col space-y-4 md:space-y-6">
+            <div className="flex flex-col px-4 sm:px-6 space-y-4 md:space-y-6">
               <div
                 ref={quoteRef}
                 className="text-lg sm:text-xl md:text-2xl lg:text-3xl leading-relaxed flex flex-wrap"
@@ -352,7 +352,7 @@ function Message({ profileImage = "/FALCH.png" }: MessageProps) {
               <div className="text-right">
                 <p className="text-lg sm:text-xl md:text-2xl font-bold">FAHL</p>
               </div>
-              <div className="pt-6 md:pt-8">
+              <div className="">
                 <Link
                   to="/"
                   className="inline-flex items-center space-x-2 sm:space-x-4 border border-primary rounded-full px-5 sm:px-8 py-3 sm:py-4 text-primary hover:bg-primary/10 transition-all duration-300"
