@@ -9,6 +9,7 @@
   --color-quaternary: #0f172a;
   --color-quinary: #3fff7f;
   --color-senary: #1e1e1e;
+  --color-septenary: #232323;
   --font-poppins: "Poppins";
   --font-inter: "Inter";
 
@@ -24,7 +25,7 @@
 }
 
 body {
-  background-color: var(--color-primary);
+  background-color: var(--color-septenary);
   font-family: "Poppins", "Inter";
   overflow-x: hidden;
   overflow-y: auto;
