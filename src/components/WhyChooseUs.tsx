@@ -8,7 +8,6 @@ import {
   initScrollTriggerWithPriority,
 } from "../utils/gsapInit";
 import "../styles/whyChooseUs.css";
-import AnimatedTitle from "./AnimatedTitle";
 
 interface CardProps {
   title: string;
