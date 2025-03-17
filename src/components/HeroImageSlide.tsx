@@ -8,11 +8,6 @@ import {
 } from "../utils/gsapInit";
 import "../styles/HomeImageSlider.css"; // Import the CSS
 
-// Import images - adjust these paths to match your project structure
-import img1 from "../assets/img1.jpeg";
-import img2 from "../assets/img2.jpeg";
-import img3 from "../assets/img3.jpeg";
-
 // Define a threshold for significant window size changes
 const SIZE_CHANGE_THRESHOLD = 100; // pixels
 
@@ -310,7 +305,7 @@ function HeroImageSlide() {
               <div className="hero-image-slider__img-container">
                 <img
                   className="hero-slide__img"
-                  src={img1}
+                  src="/assets/cofee-hero.jpg"
                   alt="Refined Reception"
                 />
               </div>
@@ -334,7 +329,7 @@ function HeroImageSlide() {
               <div className="hero-image-slider__img-container">
                 <img
                   className="hero-slide__img"
-                  src={img2}
+                  src="/assets/cashe-hero.jpg"
                   alt="Practical Luxury"
                 />
               </div>
@@ -358,7 +353,7 @@ function HeroImageSlide() {
               <div className="hero-image-slider__img-container">
                 <img
                   className="hero-slide__img"
-                  src={img3}
+                  src="/assets/dates-hero.jpg"
                   alt="Modern Concrete"
                 />
               </div>
