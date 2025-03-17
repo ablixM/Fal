@@ -128,7 +128,7 @@ export function Navbar() {
       variants={navbarVariants}
       initial="visible"
       animate={isVisible ? "visible" : "hidden"}
-      className="w-full z-40 fixed top-0 left-0 right-0"
+      className="w-full z-999 fixed top-0 left-0 right-0"
     >
       <div className="max-w-screen-4xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-3 sm:py-4 flex justify-between items-center bg-primary">
         {/* Logo */}

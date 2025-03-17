@@ -10,7 +10,7 @@ function HomePage() {
 
       <WhyChooseUs />
       <HeroImageSlide />
-      <AnimatedTitle title1="OUR" title2="PRODUCTS" />
+      <AnimatedTitle title1="A" title2="MESSAGE" />
       <Message />
     </>
   );

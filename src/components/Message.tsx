@@ -32,6 +32,9 @@ function Message({ profileImage = "/FALCH.png" }: MessageProps) {
   // Track if animation needs to be updated
   const needsUpdate = useRef<boolean>(true);
 
+  // Force rerender on significant size changes
+  const [, forceRerender] = useState({});
+
   const quote =
     "With a passion for premium products and global trade, I founded Fal Trading to connect businesses with the world's finest coffee, cashews, and dates. Our commitment to quality and trust ensures that every product we deliver meets the highest standards.";
 
@@ -198,6 +201,24 @@ function Message({ profileImage = "/FALCH.png" }: MessageProps) {
     needsUpdate.current = false;
   }, [letterElements, getAnimationSettings, getLetterBatches]);
 
+  // Refresh animation when needed
+  const refreshAnimation = useCallback(() => {
+    // Kill existing ScrollTrigger
+    if (scrollTriggerRef.current) {
+      scrollTriggerRef.current.kill();
+      scrollTriggerRef.current = null;
+    }
+
+    // Refresh ScrollTrigger to adapt to new size
+    ScrollTrigger.refresh(true);
+
+    // Mark that animation needs to be updated
+    needsUpdate.current = true;
+
+    // Setup animation again
+    setupAnimation();
+  }, [setupAnimation]);
+
   // Handle window resize without causing re-renders
   useEffect(() => {
     const handleResize = () => {
@@ -214,16 +235,11 @@ function Message({ profileImage = "/FALCH.png" }: MessageProps) {
         // Update the ref without causing a re-render
         windowSizeRef.current = { width: newWidth, height: newHeight };
 
-        // Mark that animation needs to be updated
-        needsUpdate.current = true;
+        // Force a rerender to ensure animation recalculates properly
+        forceRerender({});
 
-        // Refresh ScrollTrigger to adapt to new size
-        ScrollTrigger.refresh();
-
-        // If significant change, rebuild the animation
-        if (letterElements.length > 0) {
-          setupAnimation();
-        }
+        // Refresh the animation
+        refreshAnimation();
       }
     };
 
@@ -242,8 +258,12 @@ function Message({ profileImage = "/FALCH.png" }: MessageProps) {
         const newWidth = window.innerWidth;
         const newHeight = window.innerHeight;
         windowSizeRef.current = { width: newWidth, height: newHeight };
-        needsUpdate.current = true;
-        setupAnimation();
+
+        // Force a rerender to ensure animation recalculates properly
+        forceRerender({});
+
+        // Refresh the animation
+        refreshAnimation();
       }, 300);
     };
 
@@ -254,7 +274,7 @@ function Message({ profileImage = "/FALCH.png" }: MessageProps) {
       window.removeEventListener("orientationchange", handleOrientationChange);
       clearTimeout(resizeTimer);
     };
-  }, [letterElements, setupAnimation]);
+  }, [refreshAnimation]);
 
   // Setup animation when letterElements change or component mounts
   useEffect(() => {
