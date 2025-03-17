@@ -1,7 +1,7 @@
+import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import { Navbar } from "../components/Navbar";
 import Lenis from "lenis";
-import { useEffect } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 
@@ -39,10 +39,10 @@ function Layout() {
   }, []);
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div>
       <Navbar />
 
-      <main className="flex-grow pt-16">
+      <main>
         <Outlet />
       </main>
     </div>

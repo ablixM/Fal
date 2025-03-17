@@ -1,7 +1,5 @@
 @import "tailwindcss";
-@import "./globals.css";
-@import "./landingpage.css";
-@import "./HomeImageSlider.css";
+
 @theme {
   --font-body: Inter, sans-serif;
   --color-*: initial;
@@ -25,8 +23,6 @@
 }
 
 body {
-  width: 100%;
-  min-height: 200vh;
   background-color: var(--color-primary);
   font-family: "Poppins", "Inter";
   overflow-x: hidden;

@@ -1,4 +1,4 @@
-img {
+.hero-slide__img {
   position: relative;
   width: 100%;
   height: 100%;
@@ -7,60 +7,30 @@ img {
   transform: translateX(0) scale(1.35);
 }
 
-html,
-body {
-  min-height: 100%;
-  overflow-x: hidden; /* Prevent horizontal scrolling */
-}
-
-html.lenis {
-  height: auto;
-}
-
-.lenis.lenis-smooth {
-  scroll-behavior: auto;
-}
-
-.lenis.lenis-smooth [data-lenis-prevent] {
-  overscroll-behavior: contain;
-}
-
-.lenis.lenis-stopped {
-  overflow: hidden;
-}
-
-.lenis.lenis-scrolling iframe {
-  pointer-events: none;
-}
-
-.image-slider-container {
+.hero-image-slider-container {
   position: relative;
   min-height: 200vh; /* Ensure container is tall enough to scroll */
   width: 100%;
   overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
-section {
+section.hero-image-slider__sticky {
   position: relative;
   width: 100vw;
   height: 100vh;
-
   overflow: hidden;
-}
-
-section.sticky {
   background-color: transparent;
   z-index: 1; /* Ensure it's above other content when pinned */
 }
 
-.slider {
+.hero-image-slider__slider {
   position: relative;
   width: 100%;
   height: 100%;
   overflow: hidden;
 }
 
-.slides {
+.hero-image-slider__slides {
   position: relative;
   width: 300%;
   height: 100%;
@@ -69,13 +39,13 @@ section.sticky {
   transform: translateX(0);
 }
 
-.slide {
+.hero-image-slider__slide {
   position: relative;
   flex: 1;
   height: 100%;
 }
 
-.img {
+.hero-image-slider__img-container {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -83,7 +53,7 @@ section.sticky {
 }
 
 /* Add gradient overlay */
-.img::after {
+.hero-image-slider__img-container::after {
   content: "";
   position: absolute;
   top: 0;
@@ -99,12 +69,12 @@ section.sticky {
   pointer-events: none;
 }
 
-.img img {
+.hero-image-slider__img-container img {
   position: relative;
   z-index: 0;
 }
 
-.title {
+.hero-slide__title {
   position: relative;
   width: max-content;
   height: auto;
@@ -114,7 +84,7 @@ section.sticky {
   z-index: 2;
 }
 
-.title h1 {
+.hero-slide__title h1 {
   position: relative;
   color: #fff;
   text-transform: uppercase;
@@ -126,7 +96,7 @@ section.sticky {
 }
 
 /* Style for subheading */
-.subtitle {
+.hero-slide__subtitle {
   position: relative;
   color: #fff;
   font-size: clamp(1rem, 2vw, 1.5rem);
@@ -139,11 +109,11 @@ section.sticky {
 
 /* Small devices (phones) */
 @media screen and (max-width: 640px) {
-  .title {
+  .hero-slide__title {
     margin-top: clamp(100px, 20vh, 150px);
   }
 
-  .title h1 {
+  .hero-slide__title h1 {
     font-size: clamp(2rem, 6vw, 3rem);
     letter-spacing: -1px;
   }
@@ -151,22 +121,22 @@ section.sticky {
 
 /* Medium devices (tablets) */
 @media screen and (min-width: 641px) and (max-width: 1024px) {
-  .title {
+  .hero-slide__title {
     margin-top: clamp(120px, 25vh, 200px);
   }
 
-  .title h1 {
+  .hero-slide__title h1 {
     font-size: clamp(2.5rem, 7vw, 4rem);
   }
 }
 
 /* Landscape orientation adjustments */
 @media screen and (max-height: 500px) and (orientation: landscape) {
-  .title {
+  .hero-slide__title {
     margin-top: clamp(60px, 15vh, 100px);
   }
 
-  .title h1 {
+  .hero-slide__title h1 {
     font-size: clamp(1.75rem, 5vw, 2.5rem);
   }
 }

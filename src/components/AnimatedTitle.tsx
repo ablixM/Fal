@@ -155,7 +155,7 @@ function AnimatedTitle({ title1, title2 }: AnimatedTitleProps) {
   return (
     <div
       ref={headerRef}
-      className="header  my-16 max-w-[--width-8xl] w-full mx-auto flex flex-col lg:flex-row justify-between items-center  px-8"
+      className="header my-8 sm:my-12 md:my-16 lg:my-24 max-w-[--width-8xl] w-full mx-auto flex flex-col lg:flex-row justify-between items-center px-4 sm:px-6 md:px-8 lg:px-12"
     >
       <div className="col w-full">
         <h1

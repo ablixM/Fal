@@ -130,7 +130,7 @@ export function Navbar() {
       animate={isVisible ? "visible" : "hidden"}
       className="w-full z-40 fixed top-0 left-0 right-0"
     >
-      <div className="max-w-screen-4xl mx-auto px-4 md:px-12 py-3 flex justify-between items-center bg-primary">
+      <div className="max-w-screen-4xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-3 sm:py-4 flex justify-between items-center bg-primary">
         {/* Logo */}
         <div className="flex items-center">
           <Link to="/" className=" transition-colors duration-500">
@@ -141,7 +141,7 @@ export function Navbar() {
         </div>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex space-x-8">
+        <nav className="hidden md:flex space-x-4 lg:space-x-8">
           {navItems.map((item) => (
             <FlipLink
               key={item.name}
@@ -181,7 +181,7 @@ export function Navbar() {
             animate="open"
             exit="closed"
           >
-            <div className="max-w-screen-4xl w-full px-4 mx-auto  md:px-12 py-3 flex justify-between items-center">
+            <div className="max-w-screen-4xl w-full px-4 sm:px-6 md:px-8 mx-auto py-3 sm:py-4 flex justify-between items-center">
               {/* Logo in mobile menu */}
               <div className="flex items-center">
                 <Link to="/">
@@ -201,7 +201,7 @@ export function Navbar() {
             </div>
 
             {/* Menu items - vertical layout with animation */}
-            <motion.nav className="flex flex-col px-4 bg-[var(--color-secondary)] h-screen items-start justify-center ml-12">
+            <motion.nav className="flex flex-col px-4 sm:px-6 md:px-8 bg-[var(--color-secondary)] h-screen items-start justify-center ml-4 sm:ml-8 md:ml-12">
               {navItemsMobile.map((item, index) => (
                 <motion.div
                   key={item.name}

@@ -1,7 +1,11 @@
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
-import ScrollTrigger from "gsap/ScrollTrigger";
 import { useRef, useEffect, useState, useCallback } from "react";
+import {
+  gsap,
+  useGSAP,
+  ScrollTrigger,
+  createDebouncedResizeHandler,
+  killScrollTriggers,
+} from "../utils/gsapInit";
 import "../styles/HomeImageSlider.css"; // Import the CSS
 
 // Import images - adjust these paths to match your project structure
@@ -9,19 +13,18 @@ import img1 from "../assets/img1.jpeg";
 import img2 from "../assets/img2.jpeg";
 import img3 from "../assets/img3.jpeg";
 
-gsap.registerPlugin(useGSAP);
-gsap.registerPlugin(ScrollTrigger);
-
 // Define a threshold for significant window size changes
 const SIZE_CHANGE_THRESHOLD = 100; // pixels
 
 function HeroImageSlide() {
   // Create refs for DOM elements
+  const containerRef = useRef<HTMLDivElement>(null);
   const stickySectionRef = useRef<HTMLElement>(null);
   const sliderRef = useRef<HTMLDivElement>(null);
   const slidesContainerRef = useRef<HTMLDivElement>(null);
   const slidesRef = useRef<HTMLDivElement[]>([]);
   const [lenisReady, setLenisReady] = useState(false);
+  const scrollTriggersRef = useRef<ScrollTrigger[]>([]);
 
   // Store current and previous size in refs instead of state to avoid re-renders
   const sizeRef = useRef({
@@ -35,7 +38,7 @@ function HeroImageSlide() {
 
   // Update window size only if change is significant
   const handleResize = useCallback(() => {
-    const timeoutId = setTimeout(() => {
+    const debouncedResize = createDebouncedResizeHandler(() => {
       const newWidth = window.innerWidth;
       const newHeight = window.innerHeight;
       const prevWidth = prevSizeRef.current.width;
@@ -54,8 +57,9 @@ function HeroImageSlide() {
           setupGSAPAnimations();
         }
       }
-    }, 200);
-    return () => clearTimeout(timeoutId);
+    });
+
+    return debouncedResize();
   }, [lenisReady]);
 
   // Setup resize listener
@@ -90,12 +94,14 @@ function HeroImageSlide() {
       !stickySectionRef.current ||
       !sliderRef.current ||
       !slidesContainerRef.current ||
-      !lenisReady
+      !lenisReady ||
+      !containerRef.current
     )
       return;
 
-    // Kill existing ScrollTriggers before creating new ones
-    ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+    // Kill existing ScrollTriggers for this component before creating new ones
+    killScrollTriggers(scrollTriggersRef.current);
+    scrollTriggersRef.current = [];
 
     // Force a reflow/repaint
     ScrollTrigger.refresh();
@@ -110,10 +116,12 @@ function HeroImageSlide() {
     const totalMove = slidesContainer.offsetWidth - slider.offsetWidth;
     const slideWidth = slider.offsetWidth;
 
-    // Reset initial state for titles
+    // Reset initial state for titles - use component-specific selectors
     slides.forEach((slide) => {
-      const title = slide.querySelector(".title h1");
-      const subtitle = slide.querySelector(".title .subtitle");
+      const title = slide.querySelector(".hero-slide__title h1");
+      const subtitle = slide.querySelector(
+        ".hero-slide__title .hero-slide__subtitle"
+      );
       if (title) gsap.set(title, { y: -200 });
       if (subtitle) gsap.set(subtitle, { y: -450 });
     });
@@ -126,10 +134,10 @@ function HeroImageSlide() {
           const slideElement = entry.target as HTMLDivElement;
           const currentIndex = slides.indexOf(slideElement);
           const titles = slides.map((slide) =>
-            slide.querySelector(".title h1")
+            slide.querySelector(".hero-slide__title h1")
           );
           const subtitles = slides.map((slide) =>
-            slide.querySelector(".title .subtitle")
+            slide.querySelector(".hero-slide__title .hero-slide__subtitle")
           );
 
           if (entry.intersectionRatio >= 0.25) {
@@ -198,14 +206,14 @@ function HeroImageSlide() {
     slides.forEach((slide) => observer.observe(slide));
 
     // Configure ScrollTrigger for scrolling
-    ScrollTrigger.create({
+    const mainScrollTrigger = ScrollTrigger.create({
       trigger: stickySectionRef.current,
       start: "top top",
       end: `+=${stickyHeight}px`,
       scrub: 1,
-
       pin: true,
       pinSpacing: true,
+      id: "hero-image-slider", // Add unique ID for debugging
       onUpdate: (self) => {
         const progress = self.progress;
         const mainMove = progress * totalMove;
@@ -219,7 +227,7 @@ function HeroImageSlide() {
         const slideProgress = (mainMove % slideWidth) / slideWidth;
 
         slides.forEach((slide, index) => {
-          const image = slide.querySelector("img");
+          const image = slide.querySelector(".hero-slide__img");
           if (image) {
             if (index === currentSlide || index === currentSlide + 1) {
               const relativeProgress =
@@ -242,30 +250,46 @@ function HeroImageSlide() {
       },
     });
 
+    // Store the ScrollTrigger instance for cleanup
+    scrollTriggersRef.current.push(mainScrollTrigger);
+
     return () => {
       // Cleanup
       observer.disconnect();
+      killScrollTriggers(scrollTriggersRef.current);
+      scrollTriggersRef.current = [];
     };
   }, [lenisReady]);
 
   // Run setup when component mounts and lenisReady changes
-  useEffect(() => {
-    setupGSAPAnimations();
-
-    // Add event listener for orientation changes which are significant enough to require recalculation
-    const handleOrientationChange = () => {
-      setTimeout(() => {
+  useGSAP(
+    () => {
+      // Add a small delay to ensure other components have initialized
+      const initTimeout = setTimeout(() => {
         setupGSAPAnimations();
-      }, 300); // Delay to ensure dimensions have updated
-    };
+      }, 100);
 
-    window.addEventListener("orientationchange", handleOrientationChange);
+      // Add event listener for orientation changes
+      const handleOrientationChange = () => {
+        setTimeout(() => {
+          setupGSAPAnimations();
+        }, 300);
+      };
 
-    return () => {
-      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
-      window.removeEventListener("orientationchange", handleOrientationChange);
-    };
-  }, [setupGSAPAnimations]);
+      window.addEventListener("orientationchange", handleOrientationChange);
+
+      return () => {
+        clearTimeout(initTimeout);
+        killScrollTriggers(scrollTriggersRef.current);
+        scrollTriggersRef.current = [];
+        window.removeEventListener(
+          "orientationchange",
+          handleOrientationChange
+        );
+      };
+    },
+    { scope: containerRef, dependencies: [setupGSAPAnimations] }
+  );
 
   // Function to add slide elements to the ref array
   const addToSlidesRef = (el: HTMLDivElement | null, index: number) => {
@@ -275,55 +299,76 @@ function HeroImageSlide() {
   };
 
   return (
-    <div className="image-slider-container">
-      <section ref={stickySectionRef} className="sticky">
-        <div ref={sliderRef} className="slider">
-          <div ref={slidesContainerRef} className="slides">
-            <div ref={(el) => addToSlidesRef(el, 0)} className="slide">
-              <div className="img">
-                <img src={img1} alt="Refined Reception" />
+    <div className="hero-image-slider-container" ref={containerRef}>
+      <section ref={stickySectionRef} className="hero-image-slider__sticky">
+        <div ref={sliderRef} className="hero-image-slider__slider">
+          <div ref={slidesContainerRef} className="hero-image-slider__slides">
+            <div
+              ref={(el) => addToSlidesRef(el, 0)}
+              className="hero-image-slider__slide"
+            >
+              <div className="hero-image-slider__img-container">
+                <img
+                  className="hero-slide__img"
+                  src={img1}
+                  alt="Refined Reception"
+                />
               </div>
-              <div className="title">
+              <div className="hero-slide__title px-4 sm:px-6 md:px-8 lg:px-12">
                 <h1>
                   Refined Reception
                   <br />
                   Lasting Impact
                 </h1>
-                <div className="subtitle">
+                <div className="hero-slide__subtitle mt-2 sm:mt-3 md:mt-4">
                   Elevate your space with timeless
                   <br />
                   design and sophistication
                 </div>
               </div>
             </div>
-            <div ref={(el) => addToSlidesRef(el, 1)} className="slide">
-              <div className="img">
-                <img src={img2} alt="Practical Luxury" />
+            <div
+              ref={(el) => addToSlidesRef(el, 1)}
+              className="hero-image-slider__slide"
+            >
+              <div className="hero-image-slider__img-container">
+                <img
+                  className="hero-slide__img"
+                  src={img2}
+                  alt="Practical Luxury"
+                />
               </div>
-              <div className="title">
+              <div className="hero-slide__title px-4 sm:px-6 md:px-8 lg:px-12">
                 <h1>
                   Practical Luxury
                   <br />
                   Smart Living
                 </h1>
-                <div className="subtitle">
+                <div className="hero-slide__subtitle mt-2 sm:mt-3 md:mt-4">
                   Seamlessly blend comfort
                   <br />
                   and innovation in your home
                 </div>
               </div>
             </div>
-            <div ref={(el) => addToSlidesRef(el, 2)} className="slide">
-              <div className="img">
-                <img src={img3} alt="Modern Concrete" />
+            <div
+              ref={(el) => addToSlidesRef(el, 2)}
+              className="hero-image-slider__slide"
+            >
+              <div className="hero-image-slider__img-container">
+                <img
+                  className="hero-slide__img"
+                  src={img3}
+                  alt="Modern Concrete"
+                />
               </div>
-              <div className="title">
+              <div className="hero-slide__title px-4 sm:px-6 md:px-8 lg:px-12">
                 <h1>
                   Modern Concrete
                   <br />
                   Warm Details
                 </h1>
-                <div className="subtitle">
+                <div className="hero-slide__subtitle mt-2 sm:mt-3 md:mt-4">
                   Contemporary minimalism
                   <br />
                   with thoughtful touches

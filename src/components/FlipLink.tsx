@@ -52,7 +52,7 @@ export function FlipLink({
             </motion.span>
           ))}
         </div>
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 ">
           {children.split("").map((l, i) => (
             <motion.span
               variants={{

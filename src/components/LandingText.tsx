@@ -4,6 +4,7 @@ import SplitType from "split-type";
 import CustomEase from "gsap/CustomEase";
 import { useLayoutEffect, useRef } from "react";
 import { Link } from "react-router-dom";
+import "../styles/landingpage.css";
 gsap.registerPlugin(CustomEase);
 gsap.registerPlugin(useGSAP);
 
@@ -139,9 +140,9 @@ function LandingText() {
   return (
     <div
       ref={headerRef}
-      className="header mt-10 sm:mt-16 max-w-[--width-8xl] w-full mx-auto flex flex-col lg:flex-row justify-between items-center lg:items-start px-8"
+      className="header mt-12 sm:mt-16 md:mt-20 lg:mt-24 max-w-[--width-8xl] w-full mx-auto flex flex-col lg:flex-row justify-between items-center lg:items-start px-4 sm:px-6 md:px-8 lg:px-12"
     >
-      <div className="col ">
+      <div className="col mb-8 lg:mb-0">
         <h1
           ref={title1Ref}
           className="title-1 font-normal font-inter lg:text-left text-center text-5xl sm:text-6xl md:text-7xl lg:text-8xl"
@@ -154,7 +155,7 @@ function LandingText() {
       <div className="col flex flex-col items-end justify-end">
         <h2
           ref={title2Ref}
-          className="title-2 font-normal leading-tight p-0 lg:text-right text-center text-md sm:text-xl md:text-2xl lg:text-3xl"
+          className="title-2 font-normal leading-tight p-0 lg:text-right text-center text-md sm:text-xl md:text-2xl lg:text-3xl mb-4 sm:mb-6"
         >
           One of the leading holding groups of <br /> major industry companies
           in the <br /> <span className="text-red-500">UAE</span>
@@ -162,12 +163,12 @@ function LandingText() {
         <div className="w-full">
           <Link
             to="/"
-            className="my-2 w-full inline-flex items-center space-x-2 sm:space-x-4 border border-secondary  px-5 sm:px-8 py-3 sm:py-4 text-secondary hover:bg-secondary/10 transition-all duration-300"
+            className="my-2 w-full inline-flex items-center space-x-2 sm:space-x-4 border border-secondary px-4 sm:px-5 md:px-6 lg:px-8 py-2 sm:py-3 md:py-4 text-secondary hover:bg-secondary/10 transition-all duration-300"
           >
             <span className="text-base sm:text-lg md:text-xl">
               Explore our products
             </span>
-            <span className="w-8  sm:w-32 md:w-40 h-[1px] bg-secondary"></span>
+            <span className="w-8 sm:w-16 md:w-24 lg:w-40 h-[1px] bg-secondary"></span>
           </Link>
         </div>
       </div>

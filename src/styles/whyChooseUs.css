@@ -1,0 +1,90 @@
+.why-choose-us__card-img-element {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.why-choose-us__card-content h1 {
+  font-size: 4rem;
+  font-weight: 600;
+  line-height: 1;
+  margin-bottom: 1.5em;
+}
+
+.why-choose-us__card-content p {
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+.why-choose-us__hero {
+  padding: 0;
+}
+
+.why-choose-us__intro,
+.why-choose-us__outro {
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+}
+
+.why-choose-us__intro h1,
+.why-choose-us__outro h1 {
+  margin-bottom: 0;
+}
+
+.why-choose-us__card {
+  position: relative;
+}
+
+.why-choose-us__card-inner {
+  position: relative;
+  will-change: transform;
+  width: 100%;
+  height: 100%;
+  padding: 2em;
+  display: flex;
+  gap: 4em;
+}
+
+.why-choose-us__card-content {
+  flex: 3;
+  color: #fff;
+}
+
+.why-choose-us__card-img {
+  flex: 1;
+  aspect-ratio: 16 / 9;
+  border-radius: 0.75em;
+  overflow: hidden;
+}
+
+#why-choose-us-card-1 .why-choose-us__card-inner {
+  background-color: #232323;
+}
+
+#why-choose-us-card-2 .why-choose-us__card-inner {
+  background-color: #26392c;
+}
+
+#why-choose-us-card-3 .why-choose-us__card-inner {
+  background-color: #595249;
+}
+
+#why-choose-us-card-4 .why-choose-us__card-inner {
+  background-color: #1e1e1e;
+  color: #fff;
+}
+
+@media (max-width: 900px) {
+  .why-choose-us__card-content h1 {
+    margin-bottom: 0.5rem;
+  }
+  .why-choose-us__card-content p {
+    font-size: 1rem;
+  }
+
+  .why-choose-us__card-inner {
+    flex-direction: column;
+    height: auto;
+  }
+}
