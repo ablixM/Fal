@@ -316,14 +316,14 @@ function HeroImageSlide() {
               </div>
               <div className="hero-slide__title px-4 sm:px-6 md:px-8 lg:px-12">
                 <h1>
-                  Refined Reception
+                  GREEN AND ROASTED
                   <br />
-                  Lasting Impact
+                  COFEE BEANS
                 </h1>
                 <div className="hero-slide__subtitle mt-2 sm:mt-3 md:mt-4">
-                  Elevate your space with timeless
+                  Sourced from the finest plantations,
                   <br />
-                  design and sophistication
+                  delivering unmatched aroma and taste.
                 </div>
               </div>
             </div>
@@ -340,14 +340,14 @@ function HeroImageSlide() {
               </div>
               <div className="hero-slide__title px-4 sm:px-6 md:px-8 lg:px-12">
                 <h1>
-                  Practical Luxury
+                  CASHEW
                   <br />
-                  Smart Living
+                  NUTS
                 </h1>
                 <div className="hero-slide__subtitle mt-2 sm:mt-3 md:mt-4">
-                  Seamlessly blend comfort
+                  Golden, crunchy, and creamy –
                   <br />
-                  and innovation in your home
+                  the highest quality handpicked cashews
                 </div>
               </div>
             </div>
@@ -364,14 +364,13 @@ function HeroImageSlide() {
               </div>
               <div className="hero-slide__title px-4 sm:px-6 md:px-8 lg:px-12">
                 <h1>
-                  Modern Concrete
+                  DATES
                   <br />
-                  Warm Details
                 </h1>
                 <div className="hero-slide__subtitle mt-2 sm:mt-3 md:mt-4">
-                  Contemporary minimalism
+                  Pure, rich, and naturally sweet –
                   <br />
-                  with thoughtful touches
+                  the finest dates from trusted farms.
                 </div>
               </div>
             </div>

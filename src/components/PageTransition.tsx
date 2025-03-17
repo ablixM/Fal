@@ -25,8 +25,12 @@ function PageTransition({ children }: PageTransitionProps) {
   const enterAnimation = () => {
     const tl = gsap.timeline();
 
-    // Reset bars to full height
-    gsap.set(".bar", { height: "100%" });
+    // Reset bars to full height and ensure proper transform origin
+    gsap.set(".bar", {
+      height: "100%",
+      transformOrigin: "top",
+      xPercent: 0,
+    });
 
     // Animate bars to height 0 (revealing content)
     tl.to(".bar", {
@@ -63,8 +67,12 @@ function PageTransition({ children }: PageTransitionProps) {
   const exitAnimation = () => {
     const tl = gsap.timeline();
 
-    // Reset bars to height 0
-    gsap.set(".bar", { height: 0 });
+    // Reset bars to height 0 and ensure proper transform origin
+    gsap.set(".bar", {
+      height: 0,
+      transformOrigin: "top",
+      xPercent: 0,
+    });
 
     // Animate bars to full height (covering content)
     tl.to(".bar", {
@@ -119,7 +127,14 @@ function PageTransition({ children }: PageTransitionProps) {
       setIsAnimating(true);
       // Run enter animation on initial load
       const tl = gsap.timeline();
-      gsap.set(".bar", { height: "100%" });
+
+      // Ensure proper initial state and transform origin
+      gsap.set(".bar", {
+        height: "100%",
+        transformOrigin: "top",
+        xPercent: 0,
+      });
+
       tl.to(".bar", {
         duration: TRANSITION_DURATION,
         height: 0,
@@ -148,7 +163,8 @@ function PageTransition({ children }: PageTransitionProps) {
           {arr.map((item) => (
             <div
               key={item}
-              className="bar bg-[var(--color-secondary)] w-full h-full transform-origin-top"
+              className="bar bg-[var(--color-secondary)] w-full h-full"
+              style={{ transformOrigin: "top" }}
             />
           ))}
         </div>

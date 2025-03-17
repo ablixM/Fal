@@ -20,16 +20,42 @@
   padding: 0;
 }
 
-.why-choose-us__intro,
-.why-choose-us__outro {
-  background-color: #fff;
+.why-choose-us__intro {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  padding: 2em;
+}
+
+.why-choose-us__intro {
+  background-color: transparent;
   display: flex;
   align-items: center;
 }
 
-.why-choose-us__intro h1,
-.why-choose-us__outro h1 {
+.why-choose-us__intro h1 {
   margin-bottom: 0;
+}
+
+/* Video background styles */
+.why-choose-us__intro video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.why-choose-us__intro .animated-title {
+  background-color: transparent !important;
+}
+
+.why-choose-us__intro .title-1 {
+  color: white !important;
+  font-size: 5rem !important;
+  line-height: 1.1;
 }
 
 .why-choose-us__card {
@@ -86,5 +112,15 @@
   .why-choose-us__card-inner {
     flex-direction: column;
     height: auto;
+  }
+
+  .why-choose-us__intro .title-1 {
+    font-size: 3.5rem !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .why-choose-us__intro .title-1 {
+    font-size: 2.5rem !important;
   }
 }

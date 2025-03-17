@@ -8,6 +8,7 @@ import {
   initScrollTriggerWithPriority,
 } from "../utils/gsapInit";
 import "../styles/whyChooseUs.css";
+import AnimatedTitle from "./AnimatedTitle";
 
 interface CardProps {
   title: string;
@@ -26,7 +27,7 @@ const Card = ({ title, copy, index }: CardProps) => {
         <div className="why-choose-us__card-img">
           <img
             className="why-choose-us__card-img-element"
-            src={`/assets/card-${index + 1}.jpeg`}
+            src={`/assets/card-${index + 1}.png`}
             alt={title}
           />
         </div>
@@ -38,20 +39,20 @@ const Card = ({ title, copy, index }: CardProps) => {
 export default function WhyChooseUs() {
   const cards = [
     {
-      title: "Brand Foundation",
-      copy: " The heart of your company's story. It shapes your vision, values, and voice, ensuring a clear and powerful impact in every, interaction.",
+      title: "FAST & SECURE Global Shipping",
+      copy: "We offer fast and secure global shipping services to ensure your products reach their destination on time and in perfect condition.",
     },
     {
-      title: "Design Identity",
-      copy: "Your brand's visual fingerprint. It crafts a distinctive look that sparks recognition and builds emotional connections with your audience.",
+      title: "Sustainably Sourced, Premium Quality",
+      copy: "We source our products from sustainable and ethical suppliers to ensure the highest quality and ethical production.",
     },
     {
-      title: "Digital Presence",
-      copy: "Our web solutions combine cutting-edge design and seamless functionality to create experiences that captivate and inspire your audience.",
+      title: "Competitive Pricing & Bulk Orders",
+      copy: "We offer competitive pricing and bulk order discounts to ensure you get the best value for your money.",
     },
     {
-      title: "Product Design",
-      copy: "We craft user-first products that are both functional and visually appealing, delivering solutions that leave a lasting impression.",
+      title: "Trusted by Global Clients",
+      copy: "We have a reputation for delivering exceptional service and products to clients around the world.",
     },
   ];
 
@@ -137,8 +138,36 @@ export default function WhyChooseUs() {
   );
 
   return (
-    <div className="why-choose-us-container " ref={container}>
-      <section className="why-choose-us__intro"></section>
+    <div className="why-choose-us-container" ref={container}>
+      <section className="why-choose-us__intro relative overflow-hidden">
+        {/* Video Background */}
+        <div className="absolute inset-0 w-full h-full">
+          <video
+            className="object-cover w-full h-full md:h-full "
+            autoPlay
+            muted
+            loop
+            playsInline
+          >
+            <source src="/assets/hero-vid.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+          {/* Overlay */}
+          <div className="absolute inset-0 bg-black/50"></div>
+        </div>
+
+        {/* Content */}
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col justify-center">
+          <AnimatedTitle
+            title1="Premium Coffee, Cashew & Dates"
+            title2="from farm to global markets"
+          />
+          <p className="text-white text-xl md:text-2xl mt-6 max-w-3xl mx-auto text-center font-light">
+            We connect quality producers with discerning buyers through ethical
+            sourcing and reliable global distribution.
+          </p>
+        </div>
+      </section>
 
       <section className="why-choose-us__cards">
         {cards.map((card, index) => (
