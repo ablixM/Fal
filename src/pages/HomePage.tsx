@@ -5,15 +5,14 @@ import AnimatedTitle from "../components/AnimatedTitle";
 import WhyChooseUs from "../components/WhyChooseUs";
 function HomePage() {
   return (
-    <div>
+    <>
       <LandingText />
 
       <WhyChooseUs />
-      {/* <AnimatedTitle title1="OUR" title2="PRODUCTS" /> */}
-
       <HeroImageSlide />
+      <AnimatedTitle title1="OUR" title2="PRODUCTS" />
       <Message />
-    </div>
+    </>
   );
 }
 

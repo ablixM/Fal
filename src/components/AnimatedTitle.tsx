@@ -155,12 +155,12 @@ function AnimatedTitle({ title1, title2 }: AnimatedTitleProps) {
   return (
     <div
       ref={headerRef}
-      className="header my-8 sm:my-12 md:my-16 lg:my-24 max-w-[--width-8xl] w-full mx-auto flex flex-col lg:flex-row justify-between items-center px-4 sm:px-6 md:px-8 lg:px-12"
+      className="header  animated-title bg-senary max-w-[--width-8xl] w-full mx-auto flex flex-col lg:flex-row justify-between items-center px-4 sm:px-6 md:px-8 lg:px-12"
     >
       <div className="col w-full">
         <h1
           ref={title1Ref}
-          className="title-1 font-semibold font-inter lg:text-left text-left text-5xl sm:text-6xl md:text-7xl lg:text-8xl"
+          className="title-1 text-primary font-semibold font-inter lg:text-center text-center text-5xl sm:text-6xl md:text-7xl lg:text-8xl"
         >
           <br />
           {title1}

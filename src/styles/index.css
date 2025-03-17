@@ -8,6 +8,7 @@
   --color-tertiary: #18a146;
   --color-quaternary: #0f172a;
   --color-quinary: #3fff7f;
+  --color-senary: #1e1e1e;
   --font-poppins: "Poppins";
   --font-inter: "Inter";
 
@@ -48,4 +49,8 @@ body {
   width: 20vw;
   height: 100vh;
   background-color: var(--color-secondary);
+}
+
+.animated-title {
+  position: relative;
 }
