@@ -1,10 +1,26 @@
+/* CSS Variables for responsive values */
+:root {
+  --viewport-width: 100vw;
+  --viewport-height: 100vh;
+  --slide-width: 100%;
+  --title-offset: 30vh;
+  --title-font-size: 8vw;
+  --subtitle-font-size: 2vw;
+  --parallax-intensity: 0.25;
+  --slide-scale: 1.35;
+  --slide-title-y-hidden: -200px;
+  --slide-subtitle-y-hidden: -450px;
+  --animation-duration: 1s;
+}
+
 .hero-slide__img {
   position: relative;
   width: 100%;
   height: 100%;
   object-fit: cover;
   will-change: transform, scale;
-  transform: translateX(0) scale(1.35);
+  transform: translateX(0) scale(var(--slide-scale));
+  transition: transform 0.1s ease-out;
 }
 
 .hero-image-slider-container {
@@ -16,8 +32,8 @@
 
 section.hero-image-slider__sticky {
   position: relative;
-  width: 100vw;
-  height: 100vh;
+  width: var(--viewport-width);
+  height: var(--viewport-height);
   overflow: hidden;
   background-color: transparent;
   z-index: 1; /* Ensure it's above other content when pinned */
@@ -37,12 +53,14 @@ section.hero-image-slider__sticky {
   display: flex;
   will-change: transform;
   transform: translateX(0);
+  transition: transform 0.1s ease-out;
 }
 
 .hero-image-slider__slide {
   position: relative;
   flex: 1;
   height: 100%;
+  width: var(--slide-width);
 }
 
 .hero-image-slider__img-container {
@@ -79,64 +97,110 @@ section.hero-image-slider__sticky {
   width: max-content;
   height: auto;
   margin: clamp(1rem, 2vw, 1.5em);
-  margin-top: clamp(150px, 30vh, 250px); /* Moved lower */
+  margin-top: var(--title-offset); /* Use CSS variable */
   clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
   z-index: 2;
+  transition: margin-top 0.3s ease;
 }
 
 .hero-slide__title h1 {
   position: relative;
   color: #fff;
   text-transform: uppercase;
-  font-size: clamp(2.5rem, 8vw, 85px);
+  font-size: var(--title-font-size); /* Use CSS variable */
   font-weight: 900;
   letter-spacing: clamp(-1px, -0.15vw, -2px);
   line-height: 1;
   will-change: transform;
+  transform: translateY(var(--slide-title-y-hidden));
+  transition: font-size 0.3s ease, transform var(--animation-duration) ease;
 }
 
 /* Style for subheading */
 .hero-slide__subtitle {
   position: relative;
   color: #fff;
-  font-size: clamp(1rem, 2vw, 1.5rem);
+  font-size: var(--subtitle-font-size); /* Use CSS variable */
   font-weight: 400;
   margin-top: 10px;
   opacity: 0.9;
   will-change: transform;
-  transform: translateY(-200px);
+  transform: translateY(var(--slide-subtitle-y-hidden));
+  transition: font-size 0.3s ease, transform var(--animation-duration) ease;
 }
 
 /* Small devices (phones) */
 @media screen and (max-width: 640px) {
   .hero-slide__title {
-    margin-top: clamp(100px, 20vh, 150px);
+    margin-top: var(--title-offset);
   }
 
   .hero-slide__title h1 {
-    font-size: clamp(2rem, 6vw, 3rem);
+    font-size: var(--title-font-size);
     letter-spacing: -1px;
+  }
+
+  .hero-slide__subtitle {
+    font-size: clamp(0.875rem, var(--subtitle-font-size), 1.25rem);
   }
 }
 
 /* Medium devices (tablets) */
 @media screen and (min-width: 641px) and (max-width: 1024px) {
   .hero-slide__title {
-    margin-top: clamp(120px, 25vh, 200px);
+    margin-top: var(--title-offset);
   }
 
   .hero-slide__title h1 {
-    font-size: clamp(2.5rem, 7vw, 4rem);
+    font-size: var(--title-font-size);
+  }
+
+  .hero-slide__subtitle {
+    font-size: clamp(1rem, var(--subtitle-font-size), 1.5rem);
   }
 }
 
 /* Landscape orientation adjustments */
 @media screen and (max-height: 500px) and (orientation: landscape) {
-  .hero-slide__title {
-    margin-top: clamp(60px, 15vh, 100px);
+  :root {
+    --title-offset: 15vh;
+    --title-font-size: 5vw;
+    --subtitle-font-size: 1.5vw;
+  }
+}
+
+/* High-performance animations */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-image-slider__slides {
+    transition: transform 0.1s linear;
   }
 
-  .hero-slide__title h1 {
-    font-size: clamp(1.75rem, 5vw, 2.5rem);
+  .hero-slide__img {
+    transition: transform 0.1s linear;
   }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --animation-duration: 0.5s;
+  }
+
+  .hero-image-slider__slides,
+  .hero-slide__img,
+  .hero-slide__title h1,
+  .hero-slide__subtitle {
+    transition: none;
+  }
+}
+
+/* Optimize GPU acceleration */
+.hero-image-slider__slides,
+.hero-slide__img,
+.hero-slide__title h1,
+.hero-slide__subtitle {
+  transform-style: flat;
+  backface-visibility: hidden;
+  perspective: 1000px;
+  transform: translateZ(0);
 }

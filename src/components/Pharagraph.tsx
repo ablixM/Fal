@@ -17,7 +17,7 @@ function Pharagraph({ text }: PharagraphProps) {
   return (
     <p
       ref={element}
-      className="text-xl sm:text-2xl md:text-2xl lg:text-4xl flex flex-wrap leading-12 sm:leading-13 md:leading-14 lg:leading-15"
+      className="text-center md:text-left text-xl sm:text-2xl md:text-2xl lg:text-4xl flex flex-wrap leading-10 sm:leading-13 md:leading-14 lg:leading-15"
     >
       {words.map((word, index) => {
         const start = index / words.length;

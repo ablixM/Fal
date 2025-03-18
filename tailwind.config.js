@@ -14,6 +14,14 @@ export default {
           "sans-serif",
         ],
       },
+      colors: {
+        navy: {
+          900: "#151E3D", // Dark navy color for footer background
+        },
+        green: {
+          400: "#3FFF7F", // Bright green color for headings
+        },
+      },
     },
     screens: {
       sm: "640px",

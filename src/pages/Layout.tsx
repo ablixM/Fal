@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { Navbar } from "../components/Navbar";
+import { Footer } from "../components/Footer";
 import Lenis from "lenis";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
@@ -45,15 +46,15 @@ function Layout() {
   }, [location.pathname]); // Re-initialize on route change
 
   return (
-    <PageTransition>
-      <div>
-        <Navbar />
+    <div>
+      <Navbar />
 
-        <main>
-          <Outlet />
-        </main>
-      </div>
-    </PageTransition>
+      <main>
+        <Outlet />
+      </main>
+
+      <Footer />
+    </div>
   );
 }
 

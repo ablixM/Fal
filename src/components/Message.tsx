@@ -20,18 +20,10 @@ function Message({ profileImage = "/FALCH.png" }: MessageProps) {
       className="w-full bg-secondary md:min-h-screen text-primary flex items-center relative overflow"
       id="message-section"
     >
-      <div className="container mx-auto px-4 md:px-6 py-6 md:py-8 lg:py-24">
-        <div className="flex flex-col lg:flex-row items-center gap-8 md:gap-12 lg:gap-24">
+      <div className="container mx-auto px-4 md:px-6 py-6 md:py-8 lg:py-24 text-left">
+        <div className="flex flex-col lg:flex-row items-center justify-center gap-8 md:gap-12 lg:gap-24">
           {/* Left side - Title and Image */}
-          <div className="flex flex-col items-start space-y-6 md:space-y-8 md:w-2/5 lg:w-1/3">
-            <div className="text-start">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold mb-2">
-                MEET, FAHL
-              </h2>
-              <p className="text-md sm:text-lg md:text-xl lg:text-2xl uppercase">
-                The Vision Behind Fal Trading
-              </p>
-            </div>
+          <div className="flex flex-row md:flex-col space-y-6 md:space-y-8 md:w-2/5 lg:w-1/3">
             <div className="relative overflow-hidden max-w-[350px] sm:max-w-[450px]">
               <img
                 src={profileImage}
@@ -39,17 +31,23 @@ function Message({ profileImage = "/FALCH.png" }: MessageProps) {
                 className="w-full h-full object-cover object-center rounded-sm"
               />
             </div>
+            <div className="flex px-2 flex-col items-center justify-center">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold mb-2">
+                MEET, FAHL
+              </h2>
+              <p className="text-md sm:text-lg md:text-xl lg:text-2xl uppercase text-center md:text-left">
+                The Vision Behind Fal Trading
+              </p>
+            </div>
           </div>
 
           {/* Right side - Quote */}
-          <div className="w-full md:w-4/5 lg:w-2/3 flex items-center">
+          <div className="w-full md:w-4/5 lg:w-2/3 flex items-center justify-center">
             <div className="flex flex-col w-full px-0 sm:px-6 space-y-4 md:space-y-6">
               <div>
                 <Pharagraph text={quote} />
               </div>
-              <div className="sm:text-right">
-                <p className="text-lg sm:text-xl md:text-2xl font-bold">FAHL</p>
-              </div>
+
               <div className="">
                 <Link
                   to="/"

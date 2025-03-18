@@ -1,5 +1,4 @@
 import LandingText from "../components/LandingText";
-import HeroImageSlide from "../components/HeroImageSlide";
 import Message from "../components/Message";
 import WhyChooseUs from "../components/WhyChooseUs";
 function HomePage() {
@@ -8,10 +7,8 @@ function HomePage() {
       <LandingText />
 
       <WhyChooseUs />
-      <HeroImageSlide />
-
       <Message />
-      <div className="h-screen bg-primary"></div>
+      {/* <HeroImageSlide /> */}
     </>
   );
 }

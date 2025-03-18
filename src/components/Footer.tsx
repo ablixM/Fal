@@ -1,0 +1,131 @@
+import { useState } from "react";
+import { motion } from "framer-motion";
+
+export function Footer() {
+  const [email, setEmail] = useState("");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Handle newsletter subscription
+    console.log("Subscribing email:", email);
+    setEmail("");
+  };
+
+  const siteMapLinks = [
+    "Chair-man Message",
+    "What we Do",
+    "Why choose EGIM Services",
+    "What our client say",
+    "Our Partners",
+  ];
+
+  return (
+    <footer className="bg-secondary text-white py-16">
+      <div className="container mx-auto px-4">
+        {/* Header section with CTA */}
+        <div className="mb-20">
+          <h2 className="text-5xl md:text-7xl font-bold text-quinary mb-8">
+            Get in touch to
+            <br />
+            hear more.
+          </h2>
+          <div className="flex justify-end">
+            <motion.a
+              href="/contact"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="inline-block border border-white rounded-full py-3 px-8 text-white hover:bg-white hover:text-navy-900 transition-colors"
+            >
+              CONTACT US
+            </motion.a>
+          </div>
+        </div>
+
+        {/* Main footer content */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+          {/* Newsletter subscription */}
+          <div className="col-span-1 lg:col-span-1">
+            <h3 className="text-xl font-medium mb-6">
+              SUBSCRIBE TO NEWS LETTER
+            </h3>
+            <form onSubmit={handleSubmit} className="relative">
+              <input
+                type="email"
+                placeholder="Enter Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full py-2 pr-12 bg-transparent border-b border-gray-500 text-white focus:outline-none focus:border-white"
+                required
+              />
+              <button
+                type="submit"
+                className="absolute right-0 bottom-2"
+                aria-label="Subscribe"
+              >
+                <motion.svg
+                  whileHover={{ x: 5 }}
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M5 12H19M19 12L12 5M19 12L12 19"
+                    stroke="white"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </motion.svg>
+              </button>
+            </form>
+          </div>
+
+          {/* Site Map */}
+          <div>
+            <h3 className="text-xl font-medium mb-6">SITE MAP</h3>
+            <ul className="space-y-2">
+              {siteMapLinks.map((link, index) => (
+                <li key={index}>
+                  <a
+                    href="#"
+                    className="text-gray-300 hover:text-green-400 transition-colors"
+                  >
+                    {link}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Contact Info */}
+          <div>
+            <h3 className="text-xl font-medium mb-6">HEADQUARTER</h3>
+            <p className="text-gray-300 mb-4">
+              Building 88-89, Musaffah 26, Abu Dhabi UAE
+            </p>
+
+            <h3 className="text-xl font-medium mt-8 mb-6">CONTACT INFO</h3>
+            <p className="text-gray-300 mb-4">
+              Office phone number: +97124412253
+            </p>
+
+            <h3 className="text-xl font-medium mt-8 mb-6">EMAIL</h3>
+            <p className="text-gray-300">info@egimgroup.com</p>
+          </div>
+        </div>
+
+        {/* Copyright */}
+        <div className="text-center text-gray-400 pt-8 border-t border-gray-800">
+          <p>
+            Copyright © 2021 All Rights Reserved by Empire Global Investment
+            Management
+          </p>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+export default Footer;

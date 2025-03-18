@@ -5,10 +5,15 @@ import {
   ScrollTrigger,
   killScrollTriggers,
 } from "../utils/gsapInit";
-import "../styles/HomeImageSlider.css"; // Import the CSS
+import "../styles/HeroImageSlider.css"; // Import the CSS
 
 // Resize observer throttle time (ms)
 const RESIZE_THROTTLE = 200;
+// Breakpoints for responsive adjustments
+const BREAKPOINTS = {
+  mobile: 640,
+  tablet: 1024,
+};
 
 function HeroImageSlide() {
   // Create refs for DOM elements
@@ -30,6 +35,36 @@ function HeroImageSlide() {
   });
   const resizeTimeoutRef = useRef<number | null>(null);
 
+  // Set CSS variables for responsive values
+  const setCSSVariables = useCallback(() => {
+    if (!containerRef.current) return;
+
+    const root = document.documentElement;
+    const { width, height } = window.visualViewport || {
+      width: window.innerWidth,
+      height: window.innerHeight,
+    };
+
+    // Set responsive variables on root element
+    root.style.setProperty("--viewport-width", `${width}px`);
+    root.style.setProperty("--viewport-height", `${height}px`);
+    root.style.setProperty("--slide-width", `${width}px`);
+
+    // Set breakpoint-specific variables
+    if (width <= BREAKPOINTS.mobile) {
+      root.style.setProperty("--title-offset", "20vh");
+      root.style.setProperty("--title-font-size", "6vw");
+    } else if (width <= BREAKPOINTS.tablet) {
+      root.style.setProperty("--title-offset", "25vh");
+      root.style.setProperty("--title-font-size", "7vw");
+    } else {
+      root.style.setProperty("--title-offset", "30vh");
+      root.style.setProperty("--title-font-size", "8vw");
+    }
+
+    return { width, height };
+  }, []);
+
   // Calculate and store dimensions for animation use
   const calculateDimensions = useCallback(() => {
     if (
@@ -42,13 +77,19 @@ function HeroImageSlide() {
     const slidesContainer = slidesContainerRef.current;
     const slider = sliderRef.current;
 
+    // Update CSS variables first
+    const viewportDimensions = setCSSVariables();
+    if (!viewportDimensions) return;
+
+    const { width, height } = viewportDimensions;
+
     // Get fresh measurements
     const dimensions = {
-      width: window.innerWidth,
-      height: window.innerHeight,
+      width,
+      height,
       slidesContainerWidth: slidesContainer.offsetWidth,
       sliderWidth: slider.offsetWidth,
-      slideWidth: slider.offsetWidth,
+      slideWidth: width, // Use viewport width for slide width
       totalMove: slidesContainer.offsetWidth - slider.offsetWidth,
     };
 
@@ -56,7 +97,7 @@ function HeroImageSlide() {
     dimensionsRef.current = dimensions;
 
     return dimensions;
-  }, []);
+  }, [setCSSVariables]);
 
   // Setup GSAP animations
   const setupGSAPAnimations = useCallback(() => {
@@ -83,8 +124,9 @@ function HeroImageSlide() {
     calculateDimensions();
     if (!dimensionsRef.current) return;
 
-    // Adjust this value if needed for scrolling - make it larger to ensure scrollability
-    const stickyHeight = window.innerHeight * slides.length * 2;
+    // Use CSS variables for heights
+    const slidesCount = slides.length;
+    const stickyHeight = window.innerHeight * slidesCount * 2;
 
     // Reset initial state for titles - use component-specific selectors
     slides.forEach((slide) => {
@@ -175,7 +217,7 @@ function HeroImageSlide() {
 
     slides.forEach((slide) => observer.observe(slide));
 
-    // Configure ScrollTrigger for scrolling
+    // Configure ScrollTrigger for scrolling - use matchMedia for responsive behavior
     const mainScrollTrigger = ScrollTrigger.create({
       trigger: stickySectionRef.current,
       start: "top top",
@@ -233,47 +275,83 @@ function HeroImageSlide() {
     };
   }, [lenisReady, calculateDimensions]);
 
-  // Handle resize with a ResizeObserver for better performance
+  // More efficient resize handling using a passive ResizeObserver
   useEffect(() => {
     if (!containerRef.current) return;
 
+    // Set initial CSS variables
+    setCSSVariables();
+
+    // Debounced resize handler
     const handleResize = () => {
+      // Update CSS variables immediately for smooth transitions
+      setCSSVariables();
+
       // Clear any existing timeout
       if (resizeTimeoutRef.current !== null) {
         window.clearTimeout(resizeTimeoutRef.current);
       }
 
-      // Set a new timeout to throttle the resize handler
-      resizeTimeoutRef.current = window.setTimeout(() => {
-        // Recalculate dimensions and reset animations
-        if (lenisReady) {
-          calculateDimensions();
-          setupGSAPAnimations();
-        }
-        resizeTimeoutRef.current = null;
-      }, RESIZE_THROTTLE);
+      // Use RAF for smoother updates during resize
+      requestAnimationFrame(() => {
+        // Only recalculate ScrollTrigger-dependent dimensions after resize has stopped
+        resizeTimeoutRef.current = window.setTimeout(() => {
+          if (lenisReady) {
+            calculateDimensions();
+            ScrollTrigger.refresh(true); // Force refresh ScrollTrigger measurements
+          }
+          resizeTimeoutRef.current = null;
+        }, RESIZE_THROTTLE);
+      });
     };
 
-    // Create a ResizeObserver for more accurate size change detection
+    // Create a ResizeObserver with passive option where available
     resizeObserverRef.current = new ResizeObserver(handleResize);
 
-    // Observe both window and container element for size changes
-    resizeObserverRef.current.observe(containerRef.current);
+    // Observe document body for more reliable size tracking
+    resizeObserverRef.current.observe(document.body, { box: "border-box" });
 
-    // Also listen for window resize as a fallback
-    window.addEventListener("resize", handleResize);
+    // Also listen for viewport size changes from mobile browsers
+    window.visualViewport?.addEventListener("resize", handleResize, {
+      passive: true,
+    });
+
+    // Orientation change needs special handling
+    window.addEventListener("orientationchange", () => {
+      // On orientation change, we need a longer delay and multiple refreshes
+      if (resizeTimeoutRef.current !== null) {
+        window.clearTimeout(resizeTimeoutRef.current);
+      }
+
+      // Initial update of CSS variables
+      setCSSVariables();
+
+      // First refresh after short delay
+      setTimeout(() => {
+        setCSSVariables();
+        ScrollTrigger.refresh(true);
+      }, 100);
+
+      // Final refresh after device has fully settled
+      resizeTimeoutRef.current = window.setTimeout(() => {
+        calculateDimensions();
+        setupGSAPAnimations();
+        resizeTimeoutRef.current = null;
+      }, 500);
+    });
 
     return () => {
       // Cleanup
       if (resizeObserverRef.current) {
         resizeObserverRef.current.disconnect();
       }
-      window.removeEventListener("resize", handleResize);
+      window.visualViewport?.removeEventListener("resize", handleResize);
+      window.removeEventListener("orientationchange", handleResize);
       if (resizeTimeoutRef.current !== null) {
         window.clearTimeout(resizeTimeoutRef.current);
       }
     };
-  }, [lenisReady, setupGSAPAnimations, calculateDimensions]);
+  }, [lenisReady, setupGSAPAnimations, calculateDimensions, setCSSVariables]);
 
   // Setup smooth scrolling with Lenis
   useEffect(() => {
@@ -298,7 +376,8 @@ function HeroImageSlide() {
   // Run setup when component mounts and lenisReady changes
   useGSAP(
     () => {
-      // Initial calculation of dimensions
+      // Initial calculation of dimensions and CSS variables
+      setCSSVariables();
       calculateDimensions();
 
       // Add a small delay to ensure other components have initialized
@@ -306,31 +385,10 @@ function HeroImageSlide() {
         setupGSAPAnimations();
       }, 100);
 
-      // Add event listener for orientation changes
-      const handleOrientationChange = () => {
-        // Clear previous timeout if it exists
-        if (resizeTimeoutRef.current !== null) {
-          window.clearTimeout(resizeTimeoutRef.current);
-        }
-
-        // Set a longer timeout for orientation changes as they take longer to settle
-        resizeTimeoutRef.current = window.setTimeout(() => {
-          calculateDimensions();
-          setupGSAPAnimations();
-          resizeTimeoutRef.current = null;
-        }, 300);
-      };
-
-      window.addEventListener("orientationchange", handleOrientationChange);
-
       return () => {
         clearTimeout(initTimeout);
         killScrollTriggers(scrollTriggersRef.current);
         scrollTriggersRef.current = [];
-        window.removeEventListener(
-          "orientationchange",
-          handleOrientationChange
-        );
         if (resizeTimeoutRef.current !== null) {
           window.clearTimeout(resizeTimeoutRef.current);
         }
@@ -338,7 +396,7 @@ function HeroImageSlide() {
     },
     {
       scope: containerRef,
-      dependencies: [setupGSAPAnimations, calculateDimensions],
+      dependencies: [setupGSAPAnimations, calculateDimensions, setCSSVariables],
     }
   );
 
@@ -363,6 +421,7 @@ function HeroImageSlide() {
                   className="hero-slide__img"
                   src="/assets/cofee-hero.jpg"
                   alt="Refined Reception"
+                  loading="eager"
                 />
               </div>
               <div className="hero-slide__title px-4 sm:px-6 md:px-8 lg:px-12">
@@ -387,6 +446,7 @@ function HeroImageSlide() {
                   className="hero-slide__img"
                   src="/assets/cashe-hero.jpg"
                   alt="Practical Luxury"
+                  loading="eager"
                 />
               </div>
               <div className="hero-slide__title px-4 sm:px-6 md:px-8 lg:px-12">
@@ -411,6 +471,7 @@ function HeroImageSlide() {
                   className="hero-slide__img"
                   src="/assets/dates-hero.jpg"
                   alt="Modern Concrete"
+                  loading="eager"
                 />
               </div>
               <div className="hero-slide__title px-4 sm:px-6 md:px-8 lg:px-12">
