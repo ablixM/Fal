@@ -5,28 +5,6 @@ import ProductPage from "./pages/ProductPage";
 import ServicePage from "./pages/ServicePage";
 import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
-import PageLoadDelay from "./components/PageLoadDelay";
-
-// Match delay with the transition duration in PageTransition.tsx
-const TRANSITION_DELAY = 1500; // Same as TRANSITION_DURATION in milliseconds
-
-// Add loading delay wrapper
-const withLoadingDelay = (Component: React.ComponentType) => {
-  return (props: Record<string, unknown>) => {
-    return (
-      <PageLoadDelay delay={TRANSITION_DELAY}>
-        <Component {...props} />
-      </PageLoadDelay>
-    );
-  };
-};
-
-// Wrap components with loading delay
-const DelayedHomePage = withLoadingDelay(HomePage);
-const DelayedProductPage = withLoadingDelay(ProductPage);
-const DelayedServicePage = withLoadingDelay(ServicePage);
-const DelayedAboutPage = withLoadingDelay(AboutPage);
-const DelayedContactPage = withLoadingDelay(ContactPage);
 
 const router = createBrowserRouter([
   {
@@ -36,23 +14,23 @@ const router = createBrowserRouter([
       {
         path: "/",
         index: true,
-        element: <DelayedHomePage />,
+        element: <HomePage />,
       },
       {
         path: "/products",
-        element: <DelayedProductPage />,
+        element: <ProductPage />,
       },
       {
         path: "/services",
-        element: <DelayedServicePage />,
+        element: <ServicePage />,
       },
       {
         path: "/about",
-        element: <DelayedAboutPage />,
+        element: <AboutPage />,
       },
       {
         path: "/contact",
-        element: <DelayedContactPage />,
+        element: <ContactPage />,
       },
     ],
   },

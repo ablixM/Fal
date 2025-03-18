@@ -11,7 +11,7 @@ interface PageTransitionProps {
 
 const arr = [1, 2, 3, 4, 5];
 const customEase = (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t));
-const TRANSITION_DURATION = 1.5; // Reduced duration for better responsiveness
+const TRANSITION_DURATION = 1.2; // Slightly reduced duration for better responsiveness
 
 function PageTransition({ children }: PageTransitionProps) {
   const location = useLocation();
@@ -37,11 +37,10 @@ function PageTransition({ children }: PageTransitionProps) {
       duration: TRANSITION_DURATION,
       height: 0,
       stagger: {
-        amount: 0.5,
+        amount: 0.4,
         from: "start",
       },
       ease: customEase,
-      delay: 0.2,
       onComplete: () => {
         setIsAnimating(false);
       },
@@ -51,7 +50,6 @@ function PageTransition({ children }: PageTransitionProps) {
       duration: TRANSITION_DURATION,
       opacity: 1,
       ease: customEase,
-      delay: 0.2,
     });
 
     gsap.to(".overlay-2", {
@@ -79,7 +77,7 @@ function PageTransition({ children }: PageTransitionProps) {
       duration: TRANSITION_DURATION,
       height: "100%",
       stagger: {
-        amount: 0.5,
+        amount: 0.4,
         from: "start",
       },
       ease: customEase,
@@ -106,12 +104,10 @@ function PageTransition({ children }: PageTransitionProps) {
           // After exit animation completes, update the displayed children
           setDisplayedChildren(children);
 
-          // Start enter animation after a short delay
-          setTimeout(() => {
-            enterAnimation().then(() => {
-              setIsNavigating(false);
-            });
-          }, 100);
+          // Start enter animation
+          enterAnimation().then(() => {
+            setIsNavigating(false);
+          });
         });
       });
 
@@ -139,11 +135,10 @@ function PageTransition({ children }: PageTransitionProps) {
         duration: TRANSITION_DURATION,
         height: 0,
         stagger: {
-          amount: 0.5,
+          amount: 0.4,
           from: "start",
         },
         ease: customEase,
-        delay: 0.2,
         onComplete: () => {
           setIsNavigating(false);
           setIsAnimating(false);

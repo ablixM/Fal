@@ -1,12 +1,6 @@
 "use client";
 import { useRef } from "react";
-import {
-  gsap,
-  useGSAP,
-  ScrollTrigger,
-  killScrollTriggers,
-  initScrollTriggerWithPriority,
-} from "../utils/gsapInit";
+import { gsap, useGSAP, ScrollTrigger } from "../utils/gsapInit";
 import "../styles/whyChooseUs.css";
 
 interface CardProps {
@@ -56,82 +50,55 @@ export default function WhyChooseUs() {
   ];
 
   const container = useRef<HTMLDivElement>(null);
-  const scrollTriggersRef = useRef<ScrollTrigger[]>([]);
 
   useGSAP(
     () => {
-      if (!container.current) return;
+      // Use scoped selectors to avoid conflicts with other components
+      const cards = gsap.utils.toArray<HTMLElement>(".why-choose-us__card");
 
-      // Initialize with higher priority (executes after HeroImageSlide)
-      initScrollTriggerWithPriority(() => {
-        // Clean up any existing ScrollTriggers for this component
-        killScrollTriggers(scrollTriggersRef.current);
-        scrollTriggersRef.current = [];
+      // Create ScrollTrigger for intro section
+      ScrollTrigger.create({
+        trigger: cards[0],
+        start: "top 35%",
+        endTrigger: cards[cards.length - 1],
+        end: "top 30%",
+        pin: ".why-choose-us__intro",
+        pinSpacing: false,
+        id: "why-choose-us-intro",
+        anticipatePin: 1,
+      });
 
-        // Force a complete refresh
-        ScrollTrigger.refresh(true);
+      // Create ScrollTrigger for each card
+      cards.forEach((card, index) => {
+        const isLastCard = index === cards.length - 1;
+        const cardInner = card.querySelector(".why-choose-us__card-inner");
 
-        // Use scoped selectors to avoid conflicts with other components
-        const cards = gsap.utils.toArray<HTMLElement>(".why-choose-us__card");
+        if (!isLastCard) {
+          // Pin each card
+          ScrollTrigger.create({
+            trigger: card,
+            start: "top 35%",
+            endTrigger: ".why-choose-us__outro",
+            end: "top 65%",
+            pin: true,
+            pinSpacing: false,
+          });
 
-        // Create ScrollTrigger for intro section
-        const introTrigger = ScrollTrigger.create({
-          trigger: cards[0],
-          start: "top 35%",
-          endTrigger: cards[cards.length - 1],
-          end: "top 30%",
-          pin: ".why-choose-us__intro",
-          pinSpacing: false,
-          id: "why-choose-us-intro",
-          anticipatePin: 1,
-        });
-
-        scrollTriggersRef.current.push(introTrigger);
-
-        // Create ScrollTrigger for each card
-        cards.forEach((card, index) => {
-          const isLastCard = index === cards.length - 1;
-          const cardInner = card.querySelector(".why-choose-us__card-inner");
-
-          if (!isLastCard && cardInner) {
-            // Pin each card
-            const pinTrigger = ScrollTrigger.create({
+          // Animate card inner content
+          gsap.to(cardInner, {
+            y: `-${(cards.length - index) * 14}vh`,
+            ease: "none",
+            scrollTrigger: {
               trigger: card,
               start: "top 35%",
               endTrigger: ".why-choose-us__outro",
               end: "top 65%",
-              pin: true,
-              pinSpacing: false,
-              id: `why-choose-us-card-pin-${index + 5}`, // Add unique ID for debugging
-            });
-
-            scrollTriggersRef.current.push(pinTrigger);
-
-            // Animate card inner content
-            const animTrigger = gsap.to(cardInner, {
-              y: `-${(cards.length - index) * 14}vh`,
-              ease: "none",
-              scrollTrigger: {
-                trigger: card,
-                start: "top 35%",
-                endTrigger: ".why-choose-us__outro",
-                end: "top 65%",
-                scrub: true,
-                id: `why-choose-us-card-anim-${index + 5}`, // Add unique ID for debugging
-              },
-            }).scrollTrigger;
-
-            if (animTrigger) {
-              scrollTriggersRef.current.push(animTrigger);
-            }
-          }
-        });
-      }, 1); // Priority 1 means it runs after priority 0
-
-      return () => {
-        killScrollTriggers(scrollTriggersRef.current);
-        scrollTriggersRef.current = [];
-      };
+              scrub: true,
+              // Add unique ID for debugging
+            },
+          });
+        }
+      });
     },
     { scope: container }
   );
