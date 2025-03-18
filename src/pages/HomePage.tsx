@@ -9,7 +9,9 @@ function HomePage() {
 
       <WhyChooseUs />
       <HeroImageSlide />
+
       <Message />
+      <div className="h-screen bg-primary"></div>
     </>
   );
 }

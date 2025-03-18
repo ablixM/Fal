@@ -3,13 +3,12 @@ import {
   gsap,
   useGSAP,
   ScrollTrigger,
-  createDebouncedResizeHandler,
   killScrollTriggers,
 } from "../utils/gsapInit";
 import "../styles/HomeImageSlider.css"; // Import the CSS
 
-// Define a threshold for significant window size changes
-const SIZE_CHANGE_THRESHOLD = 100; // pixels
+// Resize observer throttle time (ms)
+const RESIZE_THROTTLE = 200;
 
 function HeroImageSlide() {
   // Create refs for DOM elements
@@ -20,67 +19,43 @@ function HeroImageSlide() {
   const slidesRef = useRef<HTMLDivElement[]>([]);
   const [lenisReady, setLenisReady] = useState(false);
   const scrollTriggersRef = useRef<ScrollTrigger[]>([]);
-
-  // Store current and previous size in refs instead of state to avoid re-renders
-  const sizeRef = useRef({
-    width: window.innerWidth,
-    height: window.innerHeight,
+  const resizeObserverRef = useRef<ResizeObserver | null>(null);
+  const dimensionsRef = useRef({
+    width: 0,
+    height: 0,
+    slidesContainerWidth: 0,
+    sliderWidth: 0,
+    slideWidth: 0,
+    totalMove: 0,
   });
-  const prevSizeRef = useRef({
-    width: window.innerWidth,
-    height: window.innerHeight,
-  });
+  const resizeTimeoutRef = useRef<number | null>(null);
 
-  // Update window size only if change is significant
-  const handleResize = useCallback(() => {
-    const debouncedResize = createDebouncedResizeHandler(() => {
-      const newWidth = window.innerWidth;
-      const newHeight = window.innerHeight;
-      const prevWidth = prevSizeRef.current.width;
-      const prevHeight = prevSizeRef.current.height;
+  // Calculate and store dimensions for animation use
+  const calculateDimensions = useCallback(() => {
+    if (
+      !slidesContainerRef.current ||
+      !sliderRef.current ||
+      !containerRef.current
+    )
+      return;
 
-      // Only update if the change is significant (exceeds threshold)
-      if (
-        Math.abs(newWidth - prevWidth) > SIZE_CHANGE_THRESHOLD ||
-        Math.abs(newHeight - prevHeight) > SIZE_CHANGE_THRESHOLD
-      ) {
-        prevSizeRef.current = { width: prevWidth, height: prevHeight };
-        sizeRef.current = { width: newWidth, height: newHeight };
+    const slidesContainer = slidesContainerRef.current;
+    const slider = sliderRef.current;
 
-        // Force GSAP animations to recalculate for significant size changes
-        if (lenisReady) {
-          setupGSAPAnimations();
-        }
-      }
-    });
-
-    return debouncedResize();
-  }, [lenisReady]);
-
-  // Setup resize listener
-  useEffect(() => {
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, [handleResize]);
-
-  // Setup smooth scrolling with Lenis
-  useEffect(() => {
-    // Set the scrolling behavior
-    document.documentElement.style.overflowY = "auto";
-    document.body.style.overflowY = "auto";
-    document.documentElement.style.height = "auto";
-    document.body.style.height = "auto";
-
-    // Mark Lenis as ready
-    setLenisReady(true);
-
-    return () => {
-      // Cleanup
-      document.documentElement.style.overflowY = "";
-      document.body.style.overflowY = "";
-      document.documentElement.style.height = "";
-      document.body.style.height = "";
+    // Get fresh measurements
+    const dimensions = {
+      width: window.innerWidth,
+      height: window.innerHeight,
+      slidesContainerWidth: slidesContainer.offsetWidth,
+      sliderWidth: slider.offsetWidth,
+      slideWidth: slider.offsetWidth,
+      totalMove: slidesContainer.offsetWidth - slider.offsetWidth,
     };
+
+    // Store calculated dimensions
+    dimensionsRef.current = dimensions;
+
+    return dimensions;
   }, []);
 
   // Setup GSAP animations
@@ -104,12 +79,12 @@ function HeroImageSlide() {
     const slides = slidesRef.current;
     if (slides.length === 0) return;
 
+    // Calculate dimensions first
+    calculateDimensions();
+    if (!dimensionsRef.current) return;
+
     // Adjust this value if needed for scrolling - make it larger to ensure scrollability
-    const stickyHeight = window.innerHeight * 6;
-    const slidesContainer = slidesContainerRef.current;
-    const slider = sliderRef.current;
-    const totalMove = slidesContainer.offsetWidth - slider.offsetWidth;
-    const slideWidth = slider.offsetWidth;
+    const stickyHeight = window.innerHeight * slides.length * 2;
 
     // Reset initial state for titles - use component-specific selectors
     slides.forEach((slide) => {
@@ -193,7 +168,7 @@ function HeroImageSlide() {
         });
       },
       {
-        root: slider,
+        root: sliderRef.current,
         threshold: [0, 0.25],
       }
     );
@@ -211,9 +186,11 @@ function HeroImageSlide() {
       id: "hero-image-slider", // Add unique ID for debugging
       onUpdate: (self) => {
         const progress = self.progress;
+        // Use the latest dimensions for calculations
+        const { totalMove, slideWidth } = dimensionsRef.current;
         const mainMove = progress * totalMove;
 
-        gsap.set(slidesContainer, {
+        gsap.set(slidesContainerRef.current, {
           x: -mainMove,
           ease: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
         });
@@ -254,11 +231,76 @@ function HeroImageSlide() {
       killScrollTriggers(scrollTriggersRef.current);
       scrollTriggersRef.current = [];
     };
-  }, [lenisReady]);
+  }, [lenisReady, calculateDimensions]);
+
+  // Handle resize with a ResizeObserver for better performance
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const handleResize = () => {
+      // Clear any existing timeout
+      if (resizeTimeoutRef.current !== null) {
+        window.clearTimeout(resizeTimeoutRef.current);
+      }
+
+      // Set a new timeout to throttle the resize handler
+      resizeTimeoutRef.current = window.setTimeout(() => {
+        // Recalculate dimensions and reset animations
+        if (lenisReady) {
+          calculateDimensions();
+          setupGSAPAnimations();
+        }
+        resizeTimeoutRef.current = null;
+      }, RESIZE_THROTTLE);
+    };
+
+    // Create a ResizeObserver for more accurate size change detection
+    resizeObserverRef.current = new ResizeObserver(handleResize);
+
+    // Observe both window and container element for size changes
+    resizeObserverRef.current.observe(containerRef.current);
+
+    // Also listen for window resize as a fallback
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      // Cleanup
+      if (resizeObserverRef.current) {
+        resizeObserverRef.current.disconnect();
+      }
+      window.removeEventListener("resize", handleResize);
+      if (resizeTimeoutRef.current !== null) {
+        window.clearTimeout(resizeTimeoutRef.current);
+      }
+    };
+  }, [lenisReady, setupGSAPAnimations, calculateDimensions]);
+
+  // Setup smooth scrolling with Lenis
+  useEffect(() => {
+    // Set the scrolling behavior
+    document.documentElement.style.overflowY = "auto";
+    document.body.style.overflowY = "auto";
+    document.documentElement.style.height = "auto";
+    document.body.style.height = "auto";
+
+    // Mark Lenis as ready
+    setLenisReady(true);
+
+    return () => {
+      // Cleanup
+      document.documentElement.style.overflowY = "";
+      document.body.style.overflowY = "";
+      document.documentElement.style.height = "";
+      document.body.style.height = "";
+    };
+  }, []);
 
   // Run setup when component mounts and lenisReady changes
   useGSAP(
     () => {
+      // Initial calculation of dimensions
+      calculateDimensions();
+
       // Add a small delay to ensure other components have initialized
       const initTimeout = setTimeout(() => {
         setupGSAPAnimations();
@@ -266,8 +308,16 @@ function HeroImageSlide() {
 
       // Add event listener for orientation changes
       const handleOrientationChange = () => {
-        setTimeout(() => {
+        // Clear previous timeout if it exists
+        if (resizeTimeoutRef.current !== null) {
+          window.clearTimeout(resizeTimeoutRef.current);
+        }
+
+        // Set a longer timeout for orientation changes as they take longer to settle
+        resizeTimeoutRef.current = window.setTimeout(() => {
+          calculateDimensions();
           setupGSAPAnimations();
+          resizeTimeoutRef.current = null;
         }, 300);
       };
 
@@ -281,9 +331,15 @@ function HeroImageSlide() {
           "orientationchange",
           handleOrientationChange
         );
+        if (resizeTimeoutRef.current !== null) {
+          window.clearTimeout(resizeTimeoutRef.current);
+        }
       };
     },
-    { scope: containerRef, dependencies: [setupGSAPAnimations] }
+    {
+      scope: containerRef,
+      dependencies: [setupGSAPAnimations, calculateDimensions],
+    }
   );
 
   // Function to add slide elements to the ref array
