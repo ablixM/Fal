@@ -16,6 +16,14 @@
   font-weight: 500;
 }
 
+.why-choose-us__intro,
+.why-choose-us__outro {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  padding: 2em;
+}
+
 .why-choose-us__intro {
   position: relative;
 }
@@ -86,5 +94,9 @@
     color: #fff;
     height: 100%;
     flex: 2;
+  }
+
+  .why-choose-us__card-img {
+    display: none;
   }
 }
