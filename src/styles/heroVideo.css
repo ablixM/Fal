@@ -1,0 +1,48 @@
+.hero-video__intro video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.hero-video__intro .animated-title {
+  background-color: transparent !important;
+}
+
+.hero-video__intro .title-1 {
+  color: white !important;
+  font-size: 5rem !important;
+  line-height: 1.1;
+}
+
+.hero-video__intro {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  padding: 2em;
+}
+
+.hero-video__intro {
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+}
+
+.hero-video__intro h1 {
+  margin-bottom: 0;
+}
+
+@media (max-width: 900px) {
+  .hero-video__intro .title-1 {
+    font-size: 3.5rem !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-video__intro .title-1 {
+    font-size: 2.5rem !important;
+  }
+}

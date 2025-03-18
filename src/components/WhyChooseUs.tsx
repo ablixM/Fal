@@ -8,7 +8,6 @@ import {
   initScrollTriggerWithPriority,
 } from "../utils/gsapInit";
 import "../styles/whyChooseUs.css";
-import AnimatedTitle from "./AnimatedTitle";
 
 interface CardProps {
   title: string;
@@ -21,7 +20,7 @@ const Card = ({ title, copy, index }: CardProps) => {
     <div className="why-choose-us__card" id={`why-choose-us-card-${index + 1}`}>
       <div className="why-choose-us__card-inner">
         <div className="why-choose-us__card-content ">
-          <h1>{title}</h1>
+          <h1 className="text-quinary">{title}</h1>
           <p>{copy}</p>
         </div>
         <div className="why-choose-us__card-img">
@@ -139,36 +138,7 @@ export default function WhyChooseUs() {
 
   return (
     <div className="why-choose-us-container" ref={container}>
-      <section className="why-choose-us__intro relative overflow-hidden">
-        {/* Video Background */}
-        <div className="absolute inset-0 w-full h-full">
-          <video
-            className="object-cover w-full h-full md:h-full "
-            autoPlay
-            muted
-            loop
-            playsInline
-          >
-            <source src="/assets/hero-vid.mp4" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-          {/* Overlay */}
-          <div className="absolute inset-0 bg-black/50"></div>
-        </div>
-
-        {/* Content */}
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col justify-center">
-          <AnimatedTitle
-            title1="Premium Coffee, Cashew & Dates"
-            title2="from farm to global markets"
-          />
-          <p className="text-white text-xl md:text-2xl mt-6 max-w-3xl mx-auto text-center font-light">
-            We connect quality producers with discerning buyers through ethical
-            sourcing and reliable global distribution.
-          </p>
-        </div>
-      </section>
-
+      <section className="why-choose-us__intro "></section>
       <section className="why-choose-us__cards">
         {cards.map((card, index) => (
           <Card key={index} {...card} index={index} />

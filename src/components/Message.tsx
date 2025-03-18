@@ -20,10 +20,10 @@ function Message({ profileImage = "/FALCH.png" }: MessageProps) {
       className="w-full bg-secondary md:min-h-screen text-primary flex items-center relative overflow"
       id="message-section"
     >
-      <div className="container mx-auto px-4 md:px-6 py-6 md:py-8 lg:py-24 text-left">
+      <div className="container mx-auto px-4 md:px-6 py-6 md:py-8 lg:py-24 text-center">
         <div className="flex flex-col lg:flex-row items-center justify-center gap-8 md:gap-12 lg:gap-24">
           {/* Left side - Title and Image */}
-          <div className="flex flex-row md:flex-col space-y-6 md:space-y-8 md:w-2/5 lg:w-1/3">
+          <div className="flex flex-col  md:flex-col space-y-6 md:space-y-8 md:w-2/5 lg:w-1/3">
             <div className="relative overflow-hidden max-w-[350px] sm:max-w-[450px]">
               <img
                 src={profileImage}
@@ -35,7 +35,7 @@ function Message({ profileImage = "/FALCH.png" }: MessageProps) {
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold mb-2">
                 MEET, FAHL
               </h2>
-              <p className="text-md sm:text-lg md:text-xl lg:text-2xl uppercase text-center md:text-left">
+              <p className="text-md sm:text-lg md:text-xl lg:text-2xl uppercase text-center ">
                 The Vision Behind Fal Trading
               </p>
             </div>

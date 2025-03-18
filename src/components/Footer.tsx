@@ -20,7 +20,7 @@ export function Footer() {
   ];
 
   return (
-    <footer className="bg-secondary text-white py-16">
+    <footer className="bg-secondary text-primary py-16">
       <div className="container mx-auto px-4">
         {/* Header section with CTA */}
         <div className="mb-20">
@@ -34,7 +34,7 @@ export function Footer() {
               href="/contact"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="inline-block border border-white rounded-full py-3 px-8 text-white hover:bg-white hover:text-navy-900 transition-colors"
+              className="inline-block border border-primary rounded-full py-3 px-8 text-primary hover:bg-primary hover:text-secondary transition-colors"
             >
               CONTACT US
             </motion.a>
@@ -42,7 +42,7 @@ export function Footer() {
         </div>
 
         {/* Main footer content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+        <div className="grid grid-cols-1 text-primary md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
           {/* Newsletter subscription */}
           <div className="col-span-1 lg:col-span-1">
             <h3 className="text-xl font-medium mb-6">
@@ -54,7 +54,7 @@ export function Footer() {
                 placeholder="Enter Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full py-2 pr-12 bg-transparent border-b border-gray-500 text-white focus:outline-none focus:border-white"
+                className="w-full py-2 pr-12 bg-transparent border-b border-gray-500 text-primary focus:outline-none focus:border-primary"
                 required
               />
               <button

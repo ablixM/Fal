@@ -46,15 +46,17 @@ function Layout() {
   }, [location.pathname]); // Re-initialize on route change
 
   return (
-    <div>
-      <Navbar />
+    <PageTransition>
+      <div>
+        <Navbar />
 
-      <main>
-        <Outlet />
-      </main>
+        <main>
+          <Outlet />
+        </main>
 
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </PageTransition>
   );
 }
 

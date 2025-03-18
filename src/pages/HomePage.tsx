@@ -1,13 +1,14 @@
 import LandingText from "../components/LandingText";
 import Message from "../components/Message";
 import WhyChooseUs from "../components/WhyChooseUs";
+import HeroVideo from "../components/HeroVideo";
 function HomePage() {
   return (
     <>
       <LandingText />
-
-      <WhyChooseUs />
+      <HeroVideo />
       <Message />
+      <WhyChooseUs />
       {/* <HeroImageSlide /> */}
     </>
   );
