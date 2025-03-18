@@ -20,7 +20,7 @@ export function Footer() {
   ];
 
   return (
-    <footer className="bg-secondary text-primary py-16">
+    <footer className="bg-secondary text-primary py-16 z-50 relative">
       <div className="container mx-auto px-4">
         {/* Header section with CTA */}
         <div className="mb-20">
