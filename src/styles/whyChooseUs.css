@@ -16,10 +16,6 @@
   font-weight: 500;
 }
 
-.why-choose-us__hero {
-  padding: 0;
-}
-
 .why-choose-us__intro {
   position: relative;
 }
@@ -74,7 +70,7 @@
 @media (max-width: 900px) {
   .why-choose-us__card-content h1 {
     margin-bottom: 0.5rem;
-    font-size: 2.5rem;
+    font-size: 3.5rem;
   }
   .why-choose-us__card-content p {
     font-size: 1rem;
@@ -91,6 +87,6 @@
     justify-content: start;
     color: #fff;
     height: 100%;
-    flex: 0;
+    flex: 2;
   }
 }
