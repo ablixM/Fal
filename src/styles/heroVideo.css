@@ -20,7 +20,7 @@
 
 .hero-video__intro {
   position: relative;
-  width: 100vw;
+
   height: 100vh;
   padding: 2em;
 }
@@ -29,6 +29,7 @@
   background-color: transparent;
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 
 .hero-video__intro h1 {

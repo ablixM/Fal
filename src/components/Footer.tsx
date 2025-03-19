@@ -14,7 +14,7 @@ export function Footer() {
   const siteMapLinks = [
     "Chair-man Message",
     "What we Do",
-    "Why choose EGIM Services",
+    "Why choose FAL Services",
     "What our client say",
     "Our Partners",
   ];
@@ -24,7 +24,7 @@ export function Footer() {
       <div className="container mx-auto px-4">
         {/* Header section with CTA */}
         <div className="mb-20">
-          <h2 className="text-5xl md:text-7xl font-bold text-quinary mb-8">
+          <h2 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-bold text-quinary mb-8">
             Get in touch to
             <br />
             hear more.
@@ -34,7 +34,7 @@ export function Footer() {
               href="/contact"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="inline-block border border-primary rounded-full py-3 px-8 text-primary hover:bg-primary hover:text-secondary transition-colors"
+              className="inline-block border border-primary rounded-full py-3 px-8 sm:py-4 sm:px-10 md:py-5 md:px-12 lg:py-6 lg:px-14 text-primary hover:bg-primary hover:text-secondary transition-colors text-sm sm:text-xl md:text-3xl lg:text-4xl"
             >
               CONTACT US
             </motion.a>
@@ -112,16 +112,13 @@ export function Footer() {
             </p>
 
             <h3 className="text-xl font-medium mt-8 mb-6">EMAIL</h3>
-            <p className="text-gray-300">info@egimgroup.com</p>
+            <p className="text-gray-300">info@faltrading.com</p>
           </div>
         </div>
 
         {/* Copyright */}
         <div className="text-center text-gray-400 pt-8 border-t border-gray-800">
-          <p>
-            Copyright © 2021 All Rights Reserved by Empire Global Investment
-            Management
-          </p>
+          <p>Copyright © 2025 All Rights Reserved by FAL Trading LLC</p>
         </div>
       </div>
     </footer>

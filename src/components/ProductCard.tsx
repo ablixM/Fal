@@ -32,7 +32,7 @@ function ProductCard({
       className="h-[100vh] flex items-center justify-center sticky top-0 md:top-[100px] "
     >
       <motion.div
-        className="w-[90%] h-[50%] md:w-[80%] md:h-[80%] relative flex flex-col items-center justify-start rounded-lg "
+        className="w-[90%] h-[50%] md:w-[80%] md:h-[80%] relative flex flex-col items-center justify-start rounded-lg text-octonary"
         style={{
           backgroundColor: product.color,
           scale,
@@ -47,13 +47,13 @@ function ProductCard({
             "Pure, rich, and naturally sweet – the finest dates from trusted farms."}
         </p>
 
-        <div className="rounded-lg overflow-hidden w-full max-w-sm sm:max-w-xl md:max-w-2xl relative">
+        <div className="rounded-none md:rounded-lg overflow-hidden w-full max-w-lg sm:max-w-xl md:max-w-3xl relative my-0 md:my-4">
           <motion.div
             className="w-full h-full flex items-center justify-center "
             style={{ scale: imageScale }}
           >
             <img
-              className="w-full h-full object-cover rounded-lg"
+              className="w-full h-full object-cover "
               src={product.src}
               alt={product.title}
             />

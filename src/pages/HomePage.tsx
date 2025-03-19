@@ -9,9 +9,9 @@ function HomePage() {
       <LandingText />
 
       <HeroVideo />
+      <Message />
       <ProductsSection />
       <WhyChooseUs />
-      <Message />
     </>
   );
 }

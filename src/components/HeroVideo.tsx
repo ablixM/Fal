@@ -2,7 +2,7 @@ import AnimatedTitle from "./AnimatedTitle";
 import "../styles/heroVideo.css";
 function HeroVideo() {
   return (
-    <section className="hero-video__intro relative overflow-hidden">
+    <section className="hero-video__intro relative overflow-hidden m-0 md:m-4 rounded-lg">
       {/* Video Background */}
       <div className="absolute inset-0 w-full h-full">
         <video

@@ -6,7 +6,7 @@ export const products = [
       "Sourced from the finest plantations, delivering unmatched aroma and taste.",
     service: "Service 1",
     src: "/assets/cofee-hero.webp",
-    color: "#BBACAF",
+    color: "#232323",
   },
   {
     id: 2,
@@ -15,7 +15,7 @@ export const products = [
       "Golden, crunchy, and creamy – the highest quality handpicked cashews",
     service: "Service 2",
     src: "/assets/cashe-hero.webp",
-    color: "#977F60",
+    color: "#3C3B3B",
   },
   {
     id: 3,
@@ -24,6 +24,6 @@ export const products = [
       "Pure, rich, and naturally sweet – the finest dates from trusted farms.",
     service: "Service 3",
     src: "/assets/dates-hero.webp",
-    color: "#C2491D",
+    color: "#595249",
   },
 ];
