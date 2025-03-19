@@ -50,7 +50,7 @@ body {
 .bar {
   width: 20vw;
   height: 100vh;
-  background-color: var(--color-secondary);
+  background-color: var(--color-tertiary);
 }
 
 .animated-title {

@@ -158,7 +158,7 @@ function PageTransition({ children }: PageTransitionProps) {
           {arr.map((item) => (
             <div
               key={item}
-              className="bar bg-[var(--color-secondary)] w-full h-full"
+              className="bar bg-tertiary w-full h-full"
               style={{ transformOrigin: "top" }}
             />
           ))}
