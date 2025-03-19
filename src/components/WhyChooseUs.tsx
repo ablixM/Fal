@@ -56,49 +56,92 @@ export default function WhyChooseUs() {
       // Use scoped selectors to avoid conflicts with other components
       const cards = gsap.utils.toArray<HTMLElement>(".why-choose-us__card");
 
-      // Create ScrollTrigger for intro section
-      ScrollTrigger.create({
-        trigger: cards[0],
-        start: "top 35%",
-        endTrigger: cards[cards.length - 1],
-        end: "top 30%",
-        pin: ".why-choose-us__intro",
-        pinSpacing: false,
-        id: "why-choose-us-intro",
-        anticipatePin: 1,
-      });
+      // Create a media match condition for non-mobile devices
+      const mediaMatch = window.matchMedia("(min-width: 768px)");
 
-      // Create ScrollTrigger for each card
-      cards.forEach((card, index) => {
-        const isLastCard = index === cards.length - 1;
-        const cardInner = card.querySelector(".why-choose-us__card-inner");
+      // Function to initialize animations based on screen size
+      const initAnimations = () => {
+        // Clear any existing ScrollTriggers to prevent conflicts
+        ScrollTrigger.getAll().forEach((st) => st.kill());
 
-        if (!isLastCard) {
-          // Pin each card
+        if (mediaMatch.matches) {
+          // Desktop animations
           ScrollTrigger.create({
-            trigger: card,
+            trigger: cards[0],
             start: "top 35%",
-            endTrigger: ".why-choose-us__outro",
-            end: "top 65%",
-            pin: true,
+            endTrigger: cards[cards.length - 1],
+            end: "top 30%",
+            pin: ".why-choose-us__intro",
             pinSpacing: false,
+            id: "why-choose-us-intro",
+            anticipatePin: 1,
           });
 
-          // Animate card inner content
-          gsap.to(cardInner, {
-            y: `-${(cards.length - index) * 14}vh`,
-            ease: "none",
-            scrollTrigger: {
-              trigger: card,
-              start: "top 35%",
-              endTrigger: ".why-choose-us__outro",
-              end: "top 65%",
-              scrub: true,
-              // Add unique ID for debugging
-            },
+          // Create ScrollTrigger for each card
+          cards.forEach((card, index) => {
+            const isLastCard = index === cards.length - 1;
+            const cardInner = card.querySelector(".why-choose-us__card-inner");
+
+            if (!isLastCard) {
+              // Pin each card
+              ScrollTrigger.create({
+                trigger: card,
+                start: "top 35%",
+                endTrigger: ".why-choose-us__outro",
+                end: "top 65%",
+                pin: true,
+                pinSpacing: false,
+              });
+
+              // Animate card inner content
+              gsap.to(cardInner, {
+                y: `-${(cards.length - index) * 14}vh`,
+                ease: "none",
+                scrollTrigger: {
+                  trigger: card,
+                  start: "top 35%",
+                  endTrigger: ".why-choose-us__outro",
+                  end: "top 65%",
+                  scrub: true,
+                },
+              });
+            }
+          });
+        } else {
+          // Mobile animations - simplified version without complex pinning
+          cards.forEach((card) => {
+            // const cardInner = card.querySelector(".why-choose-us__card-inner");
+
+            // For mobile, just add a fade-in animation without pinning
+            gsap.fromTo(
+              card,
+              { opacity: 0, y: 30 },
+              {
+                opacity: 1,
+                y: 0,
+                ease: "power2.out",
+                scrollTrigger: {
+                  trigger: card,
+                  start: "top 80%",
+                  end: "top 50%",
+                  scrub: true,
+                },
+              }
+            );
           });
         }
-      });
+      };
+
+      // Initialize animations based on current screen size
+      initAnimations();
+
+      // Update animations when window is resized
+      mediaMatch.addEventListener("change", initAnimations);
+
+      // Clean up event listener on component unmount
+      return () => {
+        mediaMatch.removeEventListener("change", initAnimations);
+      };
     },
     { scope: container }
   );

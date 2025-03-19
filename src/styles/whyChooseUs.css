@@ -70,9 +70,11 @@
 @media (max-width: 900px) {
   .why-choose-us__card-content h1 {
     margin-bottom: 0.5rem;
+    font-size: 2.5rem;
   }
   .why-choose-us__card-content p {
     font-size: 1rem;
+    line-height: 1.5;
   }
 
   .why-choose-us__card-inner {
