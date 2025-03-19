@@ -23,8 +23,10 @@ function HeroImageSlide() {
   const slidesContainerRef = useRef<HTMLDivElement>(null);
   const slidesRef = useRef<HTMLDivElement[]>([]);
   const [lenisReady, setLenisReady] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const scrollTriggersRef = useRef<ScrollTrigger[]>([]);
   const resizeObserverRef = useRef<ResizeObserver | null>(null);
+  const visibilityObserverRef = useRef<MutationObserver | null>(null);
   const dimensionsRef = useRef({
     width: 0,
     height: 0,
@@ -106,7 +108,8 @@ function HeroImageSlide() {
       !sliderRef.current ||
       !slidesContainerRef.current ||
       !lenisReady ||
-      !containerRef.current
+      !containerRef.current ||
+      !isVisible
     )
       return;
 
@@ -273,7 +276,61 @@ function HeroImageSlide() {
       killScrollTriggers(scrollTriggersRef.current);
       scrollTriggersRef.current = [];
     };
-  }, [lenisReady, calculateDimensions]);
+  }, [lenisReady, calculateDimensions, isVisible]);
+
+  // Observe changes to display property
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    // Check initial visibility
+    const checkVisibility = () => {
+      if (containerRef.current) {
+        const isCurrentlyVisible =
+          window.getComputedStyle(containerRef.current).display !== "none";
+        setIsVisible(isCurrentlyVisible);
+      }
+    };
+
+    // Initial check
+    checkVisibility();
+
+    // Set up mutation observer to watch for display changes
+    const observeVisibility = () => {
+      if (visibilityObserverRef.current) {
+        visibilityObserverRef.current.disconnect();
+      }
+
+      // Check for changes in media queries that affect visibility
+      const mediaQueryList = window.matchMedia("(min-width: 1024px)"); // lg breakpoint
+
+      const handleMediaChange = (e: MediaQueryListEvent) => {
+        // Add small delay to allow DOM to update
+        setTimeout(() => {
+          checkVisibility();
+          if (e.matches) {
+            // Going from hidden to visible, need to reinitialize
+            setTimeout(() => {
+              calculateDimensions();
+              setupGSAPAnimations();
+              ScrollTrigger.refresh(true);
+            }, 100);
+          }
+        }, 50);
+      };
+
+      mediaQueryList.addEventListener("change", handleMediaChange);
+
+      return () => {
+        mediaQueryList.removeEventListener("change", handleMediaChange);
+      };
+    };
+
+    const cleanupObserver = observeVisibility();
+
+    return () => {
+      if (cleanupObserver) cleanupObserver();
+    };
+  }, [calculateDimensions, setupGSAPAnimations]);
 
   // More efficient resize handling using a passive ResizeObserver
   useEffect(() => {
@@ -296,7 +353,7 @@ function HeroImageSlide() {
       requestAnimationFrame(() => {
         // Only recalculate ScrollTrigger-dependent dimensions after resize has stopped
         resizeTimeoutRef.current = window.setTimeout(() => {
-          if (lenisReady) {
+          if (lenisReady && isVisible) {
             calculateDimensions();
             ScrollTrigger.refresh(true); // Force refresh ScrollTrigger measurements
           }
@@ -351,7 +408,13 @@ function HeroImageSlide() {
         window.clearTimeout(resizeTimeoutRef.current);
       }
     };
-  }, [lenisReady, setupGSAPAnimations, calculateDimensions, setCSSVariables]);
+  }, [
+    lenisReady,
+    setupGSAPAnimations,
+    calculateDimensions,
+    setCSSVariables,
+    isVisible,
+  ]);
 
   // Setup smooth scrolling with Lenis
   useEffect(() => {
@@ -376,6 +439,9 @@ function HeroImageSlide() {
   // Run setup when component mounts and lenisReady changes
   useGSAP(
     () => {
+      // Only run if component is visible
+      if (!isVisible) return;
+
       // Initial calculation of dimensions and CSS variables
       setCSSVariables();
       calculateDimensions();
@@ -396,7 +462,12 @@ function HeroImageSlide() {
     },
     {
       scope: containerRef,
-      dependencies: [setupGSAPAnimations, calculateDimensions, setCSSVariables],
+      dependencies: [
+        setupGSAPAnimations,
+        calculateDimensions,
+        setCSSVariables,
+        isVisible,
+      ],
     }
   );
 
@@ -408,7 +479,10 @@ function HeroImageSlide() {
   };
 
   return (
-    <div className="hero-image-slider-container" ref={containerRef}>
+    <div
+      className="hero-image-slider-container hidden lg:block"
+      ref={containerRef}
+    >
       <section ref={stickySectionRef} className="hero-image-slider__sticky">
         <div ref={sliderRef} className="hero-image-slider__slider">
           <div ref={slidesContainerRef} className="hero-image-slider__slides">

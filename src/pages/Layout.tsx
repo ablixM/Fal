@@ -22,11 +22,10 @@ function Layout() {
     gsap.ticker.lagSmoothing(0);
 
     return () => {
-      // Cleanup
       gsap.ticker.remove(lenis.raf);
       lenis.destroy();
     };
-  }, [location.pathname]); // Re-initialize on route change
+  }, [location.pathname]);
 
   return (
     <PageTransition>
