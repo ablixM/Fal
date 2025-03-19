@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState, useCallback } from "react";
+import { useRef, useEffect, useState, useCallback, memo } from "react";
 import {
   gsap,
   useGSAP,
@@ -14,6 +14,41 @@ const BREAKPOINTS = {
   mobile: 640,
   tablet: 1024,
 };
+
+// Memoize slide component for better performance
+const Slide = memo(
+  ({
+    index,
+    title,
+    subtitle,
+    imageSrc,
+    refCallback,
+  }: {
+    index: number;
+    title: string;
+    subtitle: string;
+    imageSrc: string;
+    refCallback: (el: HTMLDivElement | null) => void;
+  }) => (
+    <div ref={refCallback} className="hero-image-slider__slide">
+      <div className="hero-image-slider__img-container">
+        <img
+          className="hero-slide__img"
+          src={imageSrc}
+          alt={title}
+          loading={index === 0 ? "eager" : "lazy"}
+        />
+      </div>
+      <div className="hero-slide__title px-4 sm:px-6 md:px-8 lg:px-12">
+        <h1 dangerouslySetInnerHTML={{ __html: title }} />
+        <div
+          className="hero-slide__subtitle mt-2 sm:mt-3 md:mt-4"
+          dangerouslySetInnerHTML={{ __html: subtitle }}
+        />
+      </div>
+    </div>
+  )
+);
 
 function HeroImageSlide() {
   // Create refs for DOM elements
@@ -36,8 +71,31 @@ function HeroImageSlide() {
     totalMove: 0,
   });
   const resizeTimeoutRef = useRef<number | null>(null);
+  const mediaQueryRef = useRef<MediaQueryList | null>(null);
 
-  // Set CSS variables for responsive values
+  // Slide data to avoid recreating them on each render
+  const slidesData = useRef([
+    {
+      title: "GREEN AND ROASTED<br />COFEE BEANS",
+      subtitle:
+        "Sourced from the finest plantations,<br />delivering unmatched aroma and taste.",
+      imageSrc: "/assets/cofee-hero.jpg",
+    },
+    {
+      title: "CASHEW<br />NUTS",
+      subtitle:
+        "Golden, crunchy, and creamy –<br />the highest quality handpicked cashews",
+      imageSrc: "/assets/cashe-hero.jpg",
+    },
+    {
+      title: "DATES<br />",
+      subtitle:
+        "Pure, rich, and naturally sweet –<br />the finest dates from trusted farms.",
+      imageSrc: "/assets/dates-hero.jpg",
+    },
+  ]);
+
+  // Set CSS variables for responsive values - memoized to avoid recreation
   const setCSSVariables = useCallback(() => {
     if (!containerRef.current) return;
 
@@ -47,22 +105,29 @@ function HeroImageSlide() {
       height: window.innerHeight,
     };
 
-    // Set responsive variables on root element
-    root.style.setProperty("--viewport-width", `${width}px`);
-    root.style.setProperty("--viewport-height", `${height}px`);
-    root.style.setProperty("--slide-width", `${width}px`);
+    // Set responsive variables on root element - batch these operations
+    const cssVars = {
+      "--viewport-width": `${width}px`,
+      "--viewport-height": `${height}px`,
+      "--slide-width": `${width}px`,
+      "--title-offset":
+        width <= BREAKPOINTS.mobile
+          ? "20vh"
+          : width <= BREAKPOINTS.tablet
+          ? "25vh"
+          : "30vh",
+      "--title-font-size":
+        width <= BREAKPOINTS.mobile
+          ? "6vw"
+          : width <= BREAKPOINTS.tablet
+          ? "7vw"
+          : "8vw",
+    };
 
-    // Set breakpoint-specific variables
-    if (width <= BREAKPOINTS.mobile) {
-      root.style.setProperty("--title-offset", "20vh");
-      root.style.setProperty("--title-font-size", "6vw");
-    } else if (width <= BREAKPOINTS.tablet) {
-      root.style.setProperty("--title-offset", "25vh");
-      root.style.setProperty("--title-font-size", "7vw");
-    } else {
-      root.style.setProperty("--title-offset", "30vh");
-      root.style.setProperty("--title-font-size", "8vw");
-    }
+    // Apply all CSS vars in one batch
+    Object.entries(cssVars).forEach(([prop, val]) => {
+      root.style.setProperty(prop, val);
+    });
 
     return { width, height };
   }, []);
@@ -72,7 +137,8 @@ function HeroImageSlide() {
     if (
       !slidesContainerRef.current ||
       !sliderRef.current ||
-      !containerRef.current
+      !containerRef.current ||
+      !isVisible
     )
       return;
 
@@ -86,7 +152,7 @@ function HeroImageSlide() {
     const { width, height } = viewportDimensions;
 
     // Get fresh measurements
-    const dimensions = {
+    dimensionsRef.current = {
       width,
       height,
       slidesContainerWidth: slidesContainer.offsetWidth,
@@ -95,13 +161,64 @@ function HeroImageSlide() {
       totalMove: slidesContainer.offsetWidth - slider.offsetWidth,
     };
 
-    // Store calculated dimensions
-    dimensionsRef.current = dimensions;
+    return dimensionsRef.current;
+  }, [setCSSVariables, isVisible]);
 
-    return dimensions;
-  }, [setCSSVariables]);
+  // Handle media query changes more efficiently
+  const handleMediaQueryChange = useCallback(
+    (e: MediaQueryListEvent) => {
+      // Add small delay to allow DOM to update
+      setTimeout(() => {
+        const isCurrentlyVisible = containerRef.current
+          ? window.getComputedStyle(containerRef.current).display !== "none"
+          : false;
 
-  // Setup GSAP animations
+        setIsVisible(isCurrentlyVisible);
+
+        if (e.matches && isCurrentlyVisible) {
+          // Going from hidden to visible, need to reinitialize
+          window.requestAnimationFrame(() => {
+            calculateDimensions();
+            ScrollTrigger.refresh(true);
+          });
+        }
+      }, 50);
+    },
+    [calculateDimensions]
+  );
+
+  // Cleanup function - centralized to avoid duplication
+  const cleanup = useCallback(() => {
+    if (resizeObserverRef.current) {
+      resizeObserverRef.current.disconnect();
+      resizeObserverRef.current = null;
+    }
+
+    if (visibilityObserverRef.current) {
+      visibilityObserverRef.current.disconnect();
+      visibilityObserverRef.current = null;
+    }
+
+    if (mediaQueryRef.current) {
+      mediaQueryRef.current.removeEventListener(
+        "change",
+        handleMediaQueryChange
+      );
+    }
+
+    window.visualViewport?.removeEventListener("resize", handleResize);
+    window.removeEventListener("orientationchange", handleOrientationChange);
+
+    if (resizeTimeoutRef.current) {
+      window.clearTimeout(resizeTimeoutRef.current);
+      resizeTimeoutRef.current = null;
+    }
+
+    killScrollTriggers(scrollTriggersRef.current);
+    scrollTriggersRef.current = [];
+  }, [handleMediaQueryChange]);
+
+  // Setup GSAP animations - optimized to avoid unnecessary recalculations
   const setupGSAPAnimations = useCallback(() => {
     if (
       !stickySectionRef.current ||
@@ -117,100 +234,84 @@ function HeroImageSlide() {
     killScrollTriggers(scrollTriggersRef.current);
     scrollTriggersRef.current = [];
 
-    // Force a reflow/repaint
-    ScrollTrigger.refresh();
-
     const slides = slidesRef.current;
     if (slides.length === 0) return;
 
     // Calculate dimensions first
     calculateDimensions();
-    if (!dimensionsRef.current) return;
+    if (!dimensionsRef.current.width) return;
 
-    // Use CSS variables for heights
+    // Use CSS variables for heights - calculate once
     const slidesCount = slides.length;
     const stickyHeight = window.innerHeight * slidesCount * 2;
 
-    // Reset initial state for titles - use component-specific selectors
-    slides.forEach((slide) => {
-      const title = slide.querySelector(".hero-slide__title h1");
-      const subtitle = slide.querySelector(
-        ".hero-slide__title .hero-slide__subtitle"
-      );
-      if (title) gsap.set(title, { y: -200 });
-      if (subtitle) gsap.set(subtitle, { y: -450 });
-    });
+    // Reset initial state for titles in one batch operation
+    const titles = slides.map((slide) =>
+      slide.querySelector(".hero-slide__title h1")
+    );
+    const subtitles = slides.map((slide) =>
+      slide.querySelector(".hero-slide__title .hero-slide__subtitle")
+    );
+
+    gsap.set(titles, { y: -200 });
+    gsap.set(subtitles, { y: -450 });
 
     let currentVisibleIndex: number | null = null;
 
+    // Optimize the intersection observer to use one instance
     const observer = new IntersectionObserver(
       (entries) => {
+        let needsUpdate = false;
+        let newVisibleIndex: number | null = currentVisibleIndex;
+
         entries.forEach((entry) => {
           const slideElement = entry.target as HTMLDivElement;
           const currentIndex = slides.indexOf(slideElement);
-          const titles = slides.map((slide) =>
-            slide.querySelector(".hero-slide__title h1")
-          );
-          const subtitles = slides.map((slide) =>
-            slide.querySelector(".hero-slide__title .hero-slide__subtitle")
-          );
 
-          if (entry.intersectionRatio >= 0.25) {
-            currentVisibleIndex = currentIndex;
-            titles.forEach((title, index) => {
-              if (title) {
-                gsap.to(title, {
-                  y: index === currentIndex ? 0 : -200,
-                  duration: 1,
-                  ease: (t: number) =>
-                    Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-                  overwrite: true,
-                });
-              }
-            });
-            subtitles.forEach((subtitle, index) => {
-              if (subtitle) {
-                gsap.to(subtitle, {
-                  y: index === currentIndex ? 0 : -450,
-                  duration: 1,
-                  delay: 0.1, // Slight delay for staggered effect
-                  ease: (t: number) =>
-                    Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-                  overwrite: true,
-                });
-              }
-            });
+          if (
+            entry.intersectionRatio >= 0.25 &&
+            currentVisibleIndex !== currentIndex
+          ) {
+            newVisibleIndex = currentIndex;
+            needsUpdate = true;
           } else if (
             entry.intersectionRatio < 0.25 &&
             currentVisibleIndex === currentIndex
           ) {
             const prevIndex = currentIndex - 1;
-            currentVisibleIndex = prevIndex >= 0 ? prevIndex : null;
-
-            titles.forEach((title, index) => {
-              if (title) {
-                gsap.to(title, {
-                  y: index === prevIndex ? 0 : -200,
-                  duration: 1,
-                  ease: (t: number) =>
-                    Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-                  overwrite: true,
-                });
-              }
-            });
-            subtitles.forEach((subtitle, index) => {
-              if (subtitle) {
-                gsap.to(subtitle, {
-                  y: index === prevIndex ? 0 : -450,
-                  duration: 1,
-                  ease: (t: number) =>
-                    Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-                  overwrite: true,
-                });
-              }
-            });
+            newVisibleIndex = prevIndex >= 0 ? prevIndex : null;
+            needsUpdate = true;
           }
         });
+
+        // Only update animations if needed
+        if (needsUpdate && newVisibleIndex !== currentVisibleIndex) {
+          currentVisibleIndex = newVisibleIndex;
+
+          // Batch these animation updates
+          titles.forEach((title, index) => {
+            if (title) {
+              gsap.to(title, {
+                y: index === currentVisibleIndex ? 0 : -200,
+                duration: 1,
+                ease: "expo.out",
+                overwrite: true,
+              });
+            }
+          });
+
+          subtitles.forEach((subtitle, index) => {
+            if (subtitle) {
+              gsap.to(subtitle, {
+                y: index === currentVisibleIndex ? 0 : -450,
+                duration: 1,
+                delay: 0.1,
+                ease: "expo.out",
+                overwrite: true,
+              });
+            }
+          });
+        }
       },
       {
         root: sliderRef.current,
@@ -220,7 +321,7 @@ function HeroImageSlide() {
 
     slides.forEach((slide) => observer.observe(slide));
 
-    // Configure ScrollTrigger for scrolling - use matchMedia for responsive behavior
+    // Configure ScrollTrigger for scrolling
     const mainScrollTrigger = ScrollTrigger.create({
       trigger: stickySectionRef.current,
       start: "top top",
@@ -228,39 +329,35 @@ function HeroImageSlide() {
       scrub: 1,
       pin: true,
       pinSpacing: true,
-      id: "hero-image-slider", // Add unique ID for debugging
+      id: "hero-image-slider",
       onUpdate: (self) => {
         const progress = self.progress;
-        // Use the latest dimensions for calculations
         const { totalMove, slideWidth } = dimensionsRef.current;
         const mainMove = progress * totalMove;
 
+        // Set container position
         gsap.set(slidesContainerRef.current, {
           x: -mainMove,
-          ease: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+          ease: "expo.out",
         });
 
         const currentSlide = Math.floor(mainMove / slideWidth);
         const slideProgress = (mainMove % slideWidth) / slideWidth;
 
+        // Only animate visible and neighboring slides for performance
         slides.forEach((slide, index) => {
-          const image = slide.querySelector(".hero-slide__img");
-          if (image) {
-            if (index === currentSlide || index === currentSlide + 1) {
-              const relativeProgress =
-                index === currentSlide ? slideProgress : slideProgress - 1;
-              const parallaxAmount = relativeProgress * slideWidth * 0.25;
-              gsap.set(image, {
-                x: parallaxAmount,
-                scale: 1.35,
-                ease: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-              });
-            } else {
-              gsap.set(image, {
-                x: 0,
-                scale: 1.35,
-                ease: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-              });
+          if (Math.abs(index - currentSlide) <= 1) {
+            const image = slide.querySelector(".hero-slide__img");
+            if (image) {
+              if (index === currentSlide || index === currentSlide + 1) {
+                const relativeProgress =
+                  index === currentSlide ? slideProgress : slideProgress - 1;
+                const parallaxAmount = relativeProgress * slideWidth * 0.25;
+                gsap.set(image, {
+                  x: parallaxAmount,
+                  scale: 1.35,
+                });
+              }
             }
           }
         });
@@ -271,164 +368,117 @@ function HeroImageSlide() {
     scrollTriggersRef.current.push(mainScrollTrigger);
 
     return () => {
-      // Cleanup
       observer.disconnect();
       killScrollTriggers(scrollTriggersRef.current);
       scrollTriggersRef.current = [];
     };
   }, [lenisReady, calculateDimensions, isVisible]);
 
-  // Observe changes to display property
+  // Optimized resize handler
+  const handleResize = useCallback(() => {
+    // Clear any existing timeout
+    if (resizeTimeoutRef.current !== null) {
+      window.clearTimeout(resizeTimeoutRef.current);
+    }
+
+    // Update CSS variables immediately
+    setCSSVariables();
+
+    // Use RAF for smoother updates
+    requestAnimationFrame(() => {
+      resizeTimeoutRef.current = window.setTimeout(() => {
+        if (lenisReady && isVisible) {
+          calculateDimensions();
+          ScrollTrigger.refresh(true);
+        }
+        resizeTimeoutRef.current = null;
+      }, RESIZE_THROTTLE);
+    });
+  }, [setCSSVariables, calculateDimensions, lenisReady, isVisible]);
+
+  // Handle orientation changes
+  const handleOrientationChange = useCallback(() => {
+    if (resizeTimeoutRef.current !== null) {
+      window.clearTimeout(resizeTimeoutRef.current);
+    }
+
+    setCSSVariables();
+
+    // Schedule multiple refreshes to ensure everything settles
+    setTimeout(() => {
+      setCSSVariables();
+      ScrollTrigger.refresh(true);
+    }, 100);
+
+    resizeTimeoutRef.current = window.setTimeout(() => {
+      calculateDimensions();
+      setupGSAPAnimations();
+      resizeTimeoutRef.current = null;
+    }, 500);
+  }, [setCSSVariables, calculateDimensions, setupGSAPAnimations]);
+
+  // Observe changes to display property - simplified
   useEffect(() => {
     if (!containerRef.current) return;
 
     // Check initial visibility
-    const checkVisibility = () => {
-      if (containerRef.current) {
-        const isCurrentlyVisible =
-          window.getComputedStyle(containerRef.current).display !== "none";
-        setIsVisible(isCurrentlyVisible);
-      }
-    };
+    const isCurrentlyVisible =
+      window.getComputedStyle(containerRef.current).display !== "none";
+    setIsVisible(isCurrentlyVisible);
 
-    // Initial check
-    checkVisibility();
-
-    // Set up mutation observer to watch for display changes
-    const observeVisibility = () => {
-      if (visibilityObserverRef.current) {
-        visibilityObserverRef.current.disconnect();
-      }
-
-      // Check for changes in media queries that affect visibility
-      const mediaQueryList = window.matchMedia("(min-width: 1024px)"); // lg breakpoint
-
-      const handleMediaChange = (e: MediaQueryListEvent) => {
-        // Add small delay to allow DOM to update
-        setTimeout(() => {
-          checkVisibility();
-          if (e.matches) {
-            // Going from hidden to visible, need to reinitialize
-            setTimeout(() => {
-              calculateDimensions();
-              setupGSAPAnimations();
-              ScrollTrigger.refresh(true);
-            }, 100);
-          }
-        }, 50);
-      };
-
-      mediaQueryList.addEventListener("change", handleMediaChange);
-
-      return () => {
-        mediaQueryList.removeEventListener("change", handleMediaChange);
-      };
-    };
-
-    const cleanupObserver = observeVisibility();
+    // Set up media query listener
+    mediaQueryRef.current = window.matchMedia("(min-width: 1024px)");
+    mediaQueryRef.current.addEventListener("change", handleMediaQueryChange);
 
     return () => {
-      if (cleanupObserver) cleanupObserver();
+      if (mediaQueryRef.current) {
+        mediaQueryRef.current.removeEventListener(
+          "change",
+          handleMediaQueryChange
+        );
+      }
     };
-  }, [calculateDimensions, setupGSAPAnimations]);
+  }, [handleMediaQueryChange]);
 
-  // More efficient resize handling using a passive ResizeObserver
+  // More efficient resize handling
   useEffect(() => {
     if (!containerRef.current) return;
 
-    // Set initial CSS variables
+    // Initial setup
     setCSSVariables();
 
-    // Debounced resize handler
-    const handleResize = () => {
-      // Update CSS variables immediately for smooth transitions
-      setCSSVariables();
+    // Only create observers if component is visible
+    if (isVisible) {
+      // Create a ResizeObserver
+      resizeObserverRef.current = new ResizeObserver(handleResize);
+      resizeObserverRef.current.observe(document.body, { box: "border-box" });
 
-      // Clear any existing timeout
-      if (resizeTimeoutRef.current !== null) {
-        window.clearTimeout(resizeTimeoutRef.current);
-      }
-
-      // Use RAF for smoother updates during resize
-      requestAnimationFrame(() => {
-        // Only recalculate ScrollTrigger-dependent dimensions after resize has stopped
-        resizeTimeoutRef.current = window.setTimeout(() => {
-          if (lenisReady && isVisible) {
-            calculateDimensions();
-            ScrollTrigger.refresh(true); // Force refresh ScrollTrigger measurements
-          }
-          resizeTimeoutRef.current = null;
-        }, RESIZE_THROTTLE);
+      // Additional event listeners for mobile
+      window.visualViewport?.addEventListener("resize", handleResize, {
+        passive: true,
       });
-    };
 
-    // Create a ResizeObserver with passive option where available
-    resizeObserverRef.current = new ResizeObserver(handleResize);
+      window.addEventListener("orientationchange", handleOrientationChange);
+    }
 
-    // Observe document body for more reliable size tracking
-    resizeObserverRef.current.observe(document.body, { box: "border-box" });
-
-    // Also listen for viewport size changes from mobile browsers
-    window.visualViewport?.addEventListener("resize", handleResize, {
-      passive: true,
-    });
-
-    // Orientation change needs special handling
-    window.addEventListener("orientationchange", () => {
-      // On orientation change, we need a longer delay and multiple refreshes
-      if (resizeTimeoutRef.current !== null) {
-        window.clearTimeout(resizeTimeoutRef.current);
-      }
-
-      // Initial update of CSS variables
-      setCSSVariables();
-
-      // First refresh after short delay
-      setTimeout(() => {
-        setCSSVariables();
-        ScrollTrigger.refresh(true);
-      }, 100);
-
-      // Final refresh after device has fully settled
-      resizeTimeoutRef.current = window.setTimeout(() => {
-        calculateDimensions();
-        setupGSAPAnimations();
-        resizeTimeoutRef.current = null;
-      }, 500);
-    });
-
-    return () => {
-      // Cleanup
-      if (resizeObserverRef.current) {
-        resizeObserverRef.current.disconnect();
-      }
-      window.visualViewport?.removeEventListener("resize", handleResize);
-      window.removeEventListener("orientationchange", handleResize);
-      if (resizeTimeoutRef.current !== null) {
-        window.clearTimeout(resizeTimeoutRef.current);
-      }
-    };
+    return cleanup;
   }, [
-    lenisReady,
-    setupGSAPAnimations,
-    calculateDimensions,
     setCSSVariables,
+    handleResize,
+    handleOrientationChange,
+    cleanup,
     isVisible,
   ]);
 
-  // Setup smooth scrolling with Lenis
+  // Setup smooth scrolling - simplified
   useEffect(() => {
-    // Set the scrolling behavior
     document.documentElement.style.overflowY = "auto";
     document.body.style.overflowY = "auto";
     document.documentElement.style.height = "auto";
     document.body.style.height = "auto";
-
-    // Mark Lenis as ready
     setLenisReady(true);
 
     return () => {
-      // Cleanup
       document.documentElement.style.overflowY = "";
       document.body.style.overflowY = "";
       document.documentElement.style.height = "";
@@ -436,47 +486,40 @@ function HeroImageSlide() {
     };
   }, []);
 
-  // Run setup when component mounts and lenisReady changes
+  // Initial GSAP setup
   useGSAP(
     () => {
       // Only run if component is visible
       if (!isVisible) return;
 
-      // Initial calculation of dimensions and CSS variables
       setCSSVariables();
       calculateDimensions();
 
-      // Add a small delay to ensure other components have initialized
-      const initTimeout = setTimeout(() => {
+      // Use requestAnimationFrame for smoother initialization
+      const initTimeout = window.setTimeout(() => {
         setupGSAPAnimations();
       }, 100);
 
       return () => {
         clearTimeout(initTimeout);
-        killScrollTriggers(scrollTriggersRef.current);
-        scrollTriggersRef.current = [];
-        if (resizeTimeoutRef.current !== null) {
-          window.clearTimeout(resizeTimeoutRef.current);
-        }
+        cleanup();
       };
     },
     {
       scope: containerRef,
-      dependencies: [
-        setupGSAPAnimations,
-        calculateDimensions,
-        setCSSVariables,
-        isVisible,
-      ],
+      dependencies: [isVisible],
     }
   );
 
-  // Function to add slide elements to the ref array
-  const addToSlidesRef = (el: HTMLDivElement | null, index: number) => {
-    if (el && slidesRef.current) {
-      slidesRef.current[index] = el;
-    }
-  };
+  // Function to add slide elements to the ref array - memoized
+  const addToSlidesRef = useCallback(
+    (el: HTMLDivElement | null, index: number) => {
+      if (el) {
+        slidesRef.current[index] = el;
+      }
+    },
+    []
+  );
 
   return (
     <div
@@ -486,80 +529,16 @@ function HeroImageSlide() {
       <section ref={stickySectionRef} className="hero-image-slider__sticky">
         <div ref={sliderRef} className="hero-image-slider__slider">
           <div ref={slidesContainerRef} className="hero-image-slider__slides">
-            <div
-              ref={(el) => addToSlidesRef(el, 0)}
-              className="hero-image-slider__slide"
-            >
-              <div className="hero-image-slider__img-container">
-                <img
-                  className="hero-slide__img"
-                  src="/assets/cofee-hero.jpg"
-                  alt="Refined Reception"
-                  loading="eager"
-                />
-              </div>
-              <div className="hero-slide__title px-4 sm:px-6 md:px-8 lg:px-12">
-                <h1>
-                  GREEN AND ROASTED
-                  <br />
-                  COFEE BEANS
-                </h1>
-                <div className="hero-slide__subtitle mt-2 sm:mt-3 md:mt-4">
-                  Sourced from the finest plantations,
-                  <br />
-                  delivering unmatched aroma and taste.
-                </div>
-              </div>
-            </div>
-            <div
-              ref={(el) => addToSlidesRef(el, 1)}
-              className="hero-image-slider__slide"
-            >
-              <div className="hero-image-slider__img-container">
-                <img
-                  className="hero-slide__img"
-                  src="/assets/cashe-hero.jpg"
-                  alt="Practical Luxury"
-                  loading="eager"
-                />
-              </div>
-              <div className="hero-slide__title px-4 sm:px-6 md:px-8 lg:px-12">
-                <h1>
-                  CASHEW
-                  <br />
-                  NUTS
-                </h1>
-                <div className="hero-slide__subtitle mt-2 sm:mt-3 md:mt-4">
-                  Golden, crunchy, and creamy –
-                  <br />
-                  the highest quality handpicked cashews
-                </div>
-              </div>
-            </div>
-            <div
-              ref={(el) => addToSlidesRef(el, 2)}
-              className="hero-image-slider__slide"
-            >
-              <div className="hero-image-slider__img-container">
-                <img
-                  className="hero-slide__img"
-                  src="/assets/dates-hero.jpg"
-                  alt="Modern Concrete"
-                  loading="eager"
-                />
-              </div>
-              <div className="hero-slide__title px-4 sm:px-6 md:px-8 lg:px-12">
-                <h1>
-                  DATES
-                  <br />
-                </h1>
-                <div className="hero-slide__subtitle mt-2 sm:mt-3 md:mt-4">
-                  Pure, rich, and naturally sweet –
-                  <br />
-                  the finest dates from trusted farms.
-                </div>
-              </div>
-            </div>
+            {slidesData.current.map((slide, index) => (
+              <Slide
+                key={index}
+                index={index}
+                title={slide.title}
+                subtitle={slide.subtitle}
+                imageSrc={slide.imageSrc}
+                refCallback={(el) => addToSlidesRef(el, index)}
+              />
+            ))}
           </div>
         </div>
       </section>
