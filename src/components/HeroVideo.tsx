@@ -25,7 +25,7 @@ function HeroVideo() {
           title1="Premium Coffee, Cashew & Dates"
           title2="from farm to global markets"
         />
-        <p className="text-white text-xl md:text-2xl mt-6 max-w-3xl mx-auto text-center font-light">
+        <p className="text-primary text-xl md:text-2xl mt-6 max-w-3xl mx-auto text-center font-light">
           We connect quality producers with discerning buyers through ethical
           sourcing and reliable global distribution.
         </p>

@@ -3,6 +3,13 @@ import { useRef } from "react";
 import { gsap, useGSAP, ScrollTrigger } from "../utils/gsapInit";
 import "../styles/whyChooseUs.css";
 
+// Add window interface extension
+declare global {
+  interface Window {
+    resizeTimer: number;
+  }
+}
+
 interface CardProps {
   title: string;
   copy: string;
@@ -64,6 +71,14 @@ export default function WhyChooseUs() {
         // Clear any existing ScrollTriggers to prevent conflicts
         ScrollTrigger.getAll().forEach((st) => st.kill());
 
+        // Reset any inline styles applied by GSAP that might be causing issues
+        gsap.set(
+          [cards, ".why-choose-us__intro", ".why-choose-us__card-inner"],
+          {
+            clearProps: "all",
+          }
+        );
+
         if (mediaMatch.matches) {
           // Desktop animations
           ScrollTrigger.create({
@@ -110,8 +125,6 @@ export default function WhyChooseUs() {
         } else {
           // Mobile animations - simplified version without complex pinning
           cards.forEach((card) => {
-            // const cardInner = card.querySelector(".why-choose-us__card-inner");
-
             // For mobile, just add a fade-in animation without pinning
             gsap.fromTo(
               card,
@@ -130,6 +143,9 @@ export default function WhyChooseUs() {
             );
           });
         }
+
+        // Force ScrollTrigger to recalculate positions
+        ScrollTrigger.refresh();
       };
 
       // Initialize animations based on current screen size
@@ -138,9 +154,20 @@ export default function WhyChooseUs() {
       // Update animations when window is resized
       mediaMatch.addEventListener("change", initAnimations);
 
-      // Clean up event listener on component unmount
+      // Also handle general resize events for safety
+      window.addEventListener("resize", () => {
+        // Debounce the resize handler
+        clearTimeout(window.resizeTimer);
+        window.resizeTimer = setTimeout(() => {
+          ScrollTrigger.refresh(true);
+        }, 250) as unknown as number;
+      });
+
+      // Clean up event listeners on component unmount
       return () => {
         mediaMatch.removeEventListener("change", initAnimations);
+        window.removeEventListener("resize", () => {});
+        clearTimeout(window.resizeTimer);
       };
     },
     { scope: container }
