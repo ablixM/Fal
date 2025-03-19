@@ -10,8 +10,8 @@ function HomePage() {
 
       <HeroVideo />
       <WhyChooseUs />
-      <Message />
       <HeroImageSlide />
+      <Message />
     </>
   );
 }

@@ -79,19 +79,19 @@ function HeroImageSlide() {
       title: "GREEN AND ROASTED<br />COFEE BEANS",
       subtitle:
         "Sourced from the finest plantations,<br />delivering unmatched aroma and taste.",
-      imageSrc: "/assets/cofee-hero.jpg",
+      imageSrc: "/assets/cofee-hero.webp",
     },
     {
       title: "CASHEW<br />NUTS",
       subtitle:
         "Golden, crunchy, and creamy –<br />the highest quality handpicked cashews",
-      imageSrc: "/assets/cashe-hero.jpg",
+      imageSrc: "/assets/cashe-hero.webp",
     },
     {
       title: "DATES<br />",
       subtitle:
         "Pure, rich, and naturally sweet –<br />the finest dates from trusted farms.",
-      imageSrc: "/assets/dates-hero.jpg",
+      imageSrc: "/assets/dates-hero.webp",
     },
   ]);
 
