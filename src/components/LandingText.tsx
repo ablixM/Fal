@@ -147,18 +147,17 @@ function LandingText() {
           ref={title1Ref}
           className="title-1 font-normal font-inter lg:text-left text-center text-5xl sm:text-6xl md:text-7xl lg:text-8xl"
         >
-          FAL <br />
+          FAHL <br />
           TRADING
         </h1>
       </div>
 
-      <div className="col flex flex-col items-end justify-end">
+      <div className="col flex flex-col items-center justify-center">
         <h2
           ref={title2Ref}
-          className="title-2 font-normal leading-tight p-0 lg:text-right text-center text-md sm:text-xl md:text-2xl lg:text-3xl mb-4 sm:mb-6"
+          className="title-2 font-normal leading-tight p-0 lg:text-right text-center text-md sm:text-4xl md:text-5xl lg:text-6xl mb-4 sm:mb-6"
         >
-          One of the leading holding groups of <br /> major industry companies
-          in the <br /> <span className="text-red-500">UAE</span>
+          Premium Quality, <br /> Global Trust.
         </h2>
         <div className="w-full">
           <Link
