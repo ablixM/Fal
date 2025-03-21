@@ -498,13 +498,33 @@ function HeroImageSlide() {
       setCSSVariables();
       calculateDimensions();
 
+      // Production environments may need more robust initialization
+      const initDelay =
+        typeof window !== "undefined" &&
+        window.location.hostname !== "localhost"
+          ? 300
+          : 100;
+
       // Use requestAnimationFrame for smoother initialization
       const initTimeout = window.setTimeout(() => {
         // Initialize with a priority to ensure proper sequence with other components
         initScrollTriggerWithPriority(() => {
+          // Ensure clean start by killing any existing instances
+          ScrollTrigger.getAll().forEach((st) => {
+            const id = st.vars.id as string | undefined;
+            if (id && id === "hero-image-slider") {
+              st.kill();
+            }
+          });
+
           setupGSAPAnimations();
+
+          // Add a safety refresh after everything is set up
+          setTimeout(() => {
+            ScrollTrigger.refresh(true);
+          }, 100);
         }, 0); // Lower priority number runs first
-      }, 100);
+      }, initDelay);
 
       return () => {
         clearTimeout(initTimeout);
