@@ -30,7 +30,7 @@
   overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
-section.hero-image-slider__sticky {
+.hero-image-slider__sticky {
   position: relative;
   width: var(--viewport-width);
   height: var(--viewport-height);

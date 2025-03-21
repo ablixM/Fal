@@ -1,6 +1,11 @@
 "use client";
 import { useRef } from "react";
-import { gsap, useGSAP, ScrollTrigger } from "../utils/gsapInit";
+import {
+  gsap,
+  useGSAP,
+  ScrollTrigger,
+  initScrollTriggerWithPriority,
+} from "../utils/gsapInit";
 import "../styles/whyChooseUs.css";
 
 // Add window interface extension
@@ -62,6 +67,8 @@ export default function WhyChooseUs() {
     () => {
       // Use scoped selectors to avoid conflicts with other components
       const cards = gsap.utils.toArray<HTMLElement>(".why-choose-us__card");
+      // Store context for cleanup
+      let whyChooseUsContext: any = null;
 
       // Create a media match condition for non-mobile devices
       const mediaMatch = window.matchMedia("(min-width: 768px)");
@@ -69,7 +76,12 @@ export default function WhyChooseUs() {
       // Function to initialize animations based on screen size
       const initAnimations = () => {
         // Clear any existing ScrollTriggers to prevent conflicts
-        ScrollTrigger.getAll().forEach((st) => st.kill());
+        ScrollTrigger.getAll().forEach((st) => {
+          // Only kill ScrollTriggers that aren't from other contexts
+          if (!st.vars.id || !st.vars.id.includes("hero-")) {
+            st.kill();
+          }
+        });
 
         // Reset any inline styles applied by GSAP that might be causing issues
         gsap.set(
@@ -78,6 +90,20 @@ export default function WhyChooseUs() {
             clearProps: "all",
           }
         );
+
+        // Create a context for this component
+        ScrollTrigger.config({ limitCallbacks: true });
+        const contextExists = ScrollTrigger.getAll().some(
+          (st) => st.vars.id === "why-choose-us-context"
+        );
+        whyChooseUsContext = contextExists
+          ? ScrollTrigger.getById("why-choose-us-context")
+          : ScrollTrigger.create({
+              id: "why-choose-us-context",
+              start: 0,
+              end: 99999,
+              markers: false,
+            });
 
         if (mediaMatch.matches) {
           // Desktop animations
@@ -148,8 +174,10 @@ export default function WhyChooseUs() {
         ScrollTrigger.refresh();
       };
 
-      // Initialize animations based on current screen size
-      initAnimations();
+      // Initialize animations based on current screen size with priority
+      initScrollTriggerWithPriority(() => {
+        initAnimations();
+      }, 10); // Higher priority number runs later (after hero slider)
 
       // Update animations when window is resized
       mediaMatch.addEventListener("change", initAnimations);
@@ -168,6 +196,11 @@ export default function WhyChooseUs() {
         mediaMatch.removeEventListener("change", initAnimations);
         window.removeEventListener("resize", () => {});
         clearTimeout(window.resizeTimer);
+
+        // Clean up context
+        if (whyChooseUsContext) {
+          whyChooseUsContext.kill();
+        }
       };
     },
     { scope: container }

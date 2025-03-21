@@ -12,15 +12,15 @@ export default function AnimatedTitle({ title1, title2 }: AnimatedTitleProps) {
   const containerA = useRef(null);
   const { scrollYProgress } = useScroll({
     target: containerA,
-    offset: ["start 0.3", "0.1 start"],
+    offset: ["start start", "0.5 start"],
   });
 
-  const forwardX = useTransform(scrollYProgress, [0, 1], ["300%", "-100%"]);
-  const backwardsX = useTransform(scrollYProgress, [0, 1], ["-100%", "300%"]);
+  const forwardX = useTransform(scrollYProgress, [0, 1], ["350%", "-250%"]);
+  const backwardsX = useTransform(scrollYProgress, [0, 1], ["-250%", "350%"]);
 
   return (
     <div ref={containerA}>
-      <div className="sticky-wrapper text-septenary">
+      <div className="sticky-wrapper text-septenary h-[200vh]">
         <motion.p className="motion-paragraph" style={{ x: forwardX }}>
           {title1.trim()}
         </motion.p>

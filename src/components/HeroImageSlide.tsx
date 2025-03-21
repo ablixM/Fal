@@ -4,6 +4,7 @@ import {
   useGSAP,
   ScrollTrigger,
   killScrollTriggers,
+  initScrollTriggerWithPriority,
 } from "../utils/gsapInit";
 import "../styles/HeroImageSlider.css"; // Import the CSS
 
@@ -321,6 +322,19 @@ function HeroImageSlide() {
 
     slides.forEach((slide) => observer.observe(slide));
 
+    // Create a context for this component's ScrollTriggers
+    ScrollTrigger.config({ limitCallbacks: true });
+    const heroContext = ScrollTrigger.getAll()
+      .map((st) => st.vars.id)
+      .includes("hero-context")
+      ? ScrollTrigger.getById("hero-context")
+      : ScrollTrigger.create({
+          id: "hero-context",
+          start: 0,
+          end: 99999,
+          markers: false,
+        });
+
     // Configure ScrollTrigger for scrolling
     const mainScrollTrigger = ScrollTrigger.create({
       trigger: stickySectionRef.current,
@@ -366,6 +380,7 @@ function HeroImageSlide() {
 
     // Store the ScrollTrigger instance for cleanup
     scrollTriggersRef.current.push(mainScrollTrigger);
+    if (heroContext) scrollTriggersRef.current.push(heroContext);
 
     return () => {
       observer.disconnect();
@@ -451,7 +466,6 @@ function HeroImageSlide() {
     if (isVisible) {
       // Create a ResizeObserver
       resizeObserverRef.current = new ResizeObserver(handleResize);
-      resizeObserverRef.current.observe(document.body, { box: "border-box" });
 
       // Additional event listeners for mobile
       window.visualViewport?.addEventListener("resize", handleResize, {
@@ -472,18 +486,7 @@ function HeroImageSlide() {
 
   // Setup smooth scrolling - simplified
   useEffect(() => {
-    document.documentElement.style.overflowY = "auto";
-    document.body.style.overflowY = "auto";
-    document.documentElement.style.height = "auto";
-    document.body.style.height = "auto";
     setLenisReady(true);
-
-    return () => {
-      document.documentElement.style.overflowY = "";
-      document.body.style.overflowY = "";
-      document.documentElement.style.height = "";
-      document.body.style.height = "";
-    };
   }, []);
 
   // Initial GSAP setup
@@ -497,7 +500,10 @@ function HeroImageSlide() {
 
       // Use requestAnimationFrame for smoother initialization
       const initTimeout = window.setTimeout(() => {
-        setupGSAPAnimations();
+        // Initialize with a priority to ensure proper sequence with other components
+        initScrollTriggerWithPriority(() => {
+          setupGSAPAnimations();
+        }, 0); // Lower priority number runs first
       }, 100);
 
       return () => {
