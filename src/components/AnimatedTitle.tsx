@@ -20,7 +20,7 @@ export default function AnimatedTitle({ title1, title2 }: AnimatedTitleProps) {
 
   return (
     <div ref={containerA}>
-      <div className="sticky-wrapper text-septenary h-[200vh] md:h-[100vh]">
+      <div className="sticky-wrapper text-septenary ">
         <motion.p
           className="motion-paragraph text-left"
           style={{ x: forwardX }}
