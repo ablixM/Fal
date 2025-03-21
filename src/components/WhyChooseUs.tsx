@@ -73,23 +73,25 @@ export default function WhyChooseUs() {
       // Create a media match condition for non-mobile devices
       const mediaMatch = window.matchMedia("(min-width: 768px)");
 
-      // Function to initialize animations based on screen size
-      const initAnimations = () => {
-        // First clear all ScrollTriggers that belong to this component
+      // Helper function to safely kill only this component's ScrollTriggers
+      const safelyKillScrollTriggers = () => {
+        // Clear all ScrollTriggers that belong to this component
         ScrollTrigger.getAll().forEach((st) => {
           const id = st.vars.id as string | undefined;
           if (id && id.includes("why-choose-us")) {
-            st.kill();
+            try {
+              st.kill();
+            } catch (e) {
+              console.error("Error killing ScrollTrigger:", e);
+            }
           }
         });
+      };
 
-        // Now clear any ScrollTriggers that don't have an ID and aren't from other components
-        ScrollTrigger.getAll().forEach((st) => {
-          const id = st.vars.id as string | undefined;
-          if (!id || (!id.includes("hero-") && !id.includes("why-choose-us"))) {
-            st.kill();
-          }
-        });
+      // Function to initialize animations based on screen size
+      const initAnimations = () => {
+        // First clear this component's ScrollTriggers
+        safelyKillScrollTriggers();
 
         // Reset any inline styles applied by GSAP that might be causing issues
         gsap.set(
@@ -191,6 +193,24 @@ export default function WhyChooseUs() {
         ScrollTrigger.refresh(true);
       };
 
+      // Function to safely initialize with delay and priority
+      const safelyInitializeAnimations = (delay = 0, priority = 0) => {
+        // First kill any existing ScrollTriggers
+        safelyKillScrollTriggers();
+
+        // Initialize with delay and priority
+        setTimeout(() => {
+          initScrollTriggerWithPriority(() => {
+            initAnimations();
+
+            // Do a final refresh after everything is set up
+            setTimeout(() => {
+              ScrollTrigger.refresh(true);
+            }, 100);
+          }, priority);
+        }, delay);
+      };
+
       // Use a higher delay for the WhyChooseUs component
       // Initialize animations based on current screen size with priority
       // Production environments may need more time to ensure DOM is ready
@@ -200,20 +220,29 @@ export default function WhyChooseUs() {
           ? 500
           : 100;
 
-      setTimeout(() => {
-        initScrollTriggerWithPriority(() => {
-          initAnimations();
-        }, 20); // Higher priority value than HeroImageSlide
-      }, initDelay);
+      // Initial setup
+      safelyInitializeAnimations(initDelay, 20);
 
       // Update animations when window is resized
-      mediaMatch.addEventListener("change", initAnimations);
+      const mediaChangeHandler = () => {
+        // Kill existing instances first
+        safelyKillScrollTriggers();
+
+        // Reinitialize with a delay to let other components adjust first
+        safelyInitializeAnimations(200, 20);
+      };
+
+      mediaMatch.addEventListener("change", mediaChangeHandler);
 
       // Also handle general resize events for safety
       const resizeHandler = () => {
         clearTimeout(window.resizeTimer);
         window.resizeTimer = setTimeout(() => {
-          ScrollTrigger.refresh(true);
+          // Only kill and refresh our ScrollTriggers
+          safelyKillScrollTriggers();
+
+          // Wait a moment before reinitializing
+          safelyInitializeAnimations(200, 20);
         }, 250) as unknown as number;
       };
 
@@ -221,7 +250,7 @@ export default function WhyChooseUs() {
 
       // Clean up event listeners on component unmount
       return () => {
-        mediaMatch.removeEventListener("change", initAnimations);
+        mediaMatch.removeEventListener("change", mediaChangeHandler);
         window.removeEventListener("resize", resizeHandler);
         clearTimeout(window.resizeTimer);
 
@@ -235,16 +264,7 @@ export default function WhyChooseUs() {
         }
 
         // Clean up all scrolltriggers related to this component
-        ScrollTrigger.getAll().forEach((st) => {
-          const id = st.vars.id as string | undefined;
-          if (id && id.includes("why-choose-us")) {
-            try {
-              st.kill();
-            } catch (e) {
-              console.error("Error killing ScrollTrigger:", e);
-            }
-          }
-        });
+        safelyKillScrollTriggers();
       };
     },
     { scope: container }
