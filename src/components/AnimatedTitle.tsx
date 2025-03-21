@@ -20,7 +20,7 @@ export default function AnimatedTitle({ title1, title2 }: AnimatedTitleProps) {
 
   return (
     <div ref={containerA}>
-      <div className="sticky-wrapper text-septenary h-[200vh]">
+      <div className="sticky-wrapper text-septenary h-[100vh]">
         <motion.p className="motion-paragraph" style={{ x: forwardX }}>
           {title1.trim()}
         </motion.p>

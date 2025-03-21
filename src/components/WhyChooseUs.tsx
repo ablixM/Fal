@@ -88,18 +88,45 @@ export default function WhyChooseUs() {
         });
       };
 
-      // Function to initialize animations based on screen size
-      const initAnimations = () => {
-        // First clear this component's ScrollTriggers
-        safelyKillScrollTriggers();
-
-        // Reset any inline styles applied by GSAP that might be causing issues
+      // Force recalculation of dimensions for responsive layouts
+      const forceLayoutUpdate = () => {
+        // Reset any inline styles that might be causing issues
         gsap.set(
           [cards, ".why-choose-us__intro", ".why-choose-us__card-inner"],
           {
             clearProps: "all",
           }
         );
+
+        // Force browser to recalculate layout
+        if (container.current) {
+          const currentDisplay = window.getComputedStyle(
+            container.current
+          ).display;
+          container.current.style.display = "none";
+          void container.current.offsetHeight; // Trigger reflow
+          container.current.style.display = currentDisplay;
+        }
+
+        // Let any card images reload properly
+        cards.forEach((card) => {
+          const img = card.querySelector("img");
+          if (img) {
+            const currentSrc = img.getAttribute("src");
+            if (currentSrc) {
+              img.setAttribute("src", currentSrc);
+            }
+          }
+        });
+      };
+
+      // Function to initialize animations based on screen size
+      const initAnimations = () => {
+        // First clear this component's ScrollTriggers
+        safelyKillScrollTriggers();
+
+        // Update layout dimensions
+        forceLayoutUpdate();
 
         // Create a context for this component with a unique timestamp to ensure freshness
         ScrollTrigger.config({ limitCallbacks: true });
@@ -223,12 +250,26 @@ export default function WhyChooseUs() {
       // Initial setup
       safelyInitializeAnimations(initDelay, 20);
 
+      // Also initialize on complete page load
+      if (typeof window !== "undefined") {
+        window.addEventListener(
+          "load",
+          () => {
+            // Force layout update on load
+            forceLayoutUpdate();
+            safelyInitializeAnimations(100, 20);
+          },
+          { once: true }
+        );
+      }
+
       // Update animations when window is resized
       const mediaChangeHandler = () => {
         // Kill existing instances first
         safelyKillScrollTriggers();
 
         // Reinitialize with a delay to let other components adjust first
+        forceLayoutUpdate();
         safelyInitializeAnimations(200, 20);
       };
 
@@ -241,6 +282,9 @@ export default function WhyChooseUs() {
           // Only kill and refresh our ScrollTriggers
           safelyKillScrollTriggers();
 
+          // Force layout recalculation
+          forceLayoutUpdate();
+
           // Wait a moment before reinitializing
           safelyInitializeAnimations(200, 20);
         }, 250) as unknown as number;
@@ -248,10 +292,28 @@ export default function WhyChooseUs() {
 
       window.addEventListener("resize", resizeHandler);
 
+      // Handle orientation change events specially
+      const orientationHandler = () => {
+        // Kill existing instances immediately
+        safelyKillScrollTriggers();
+
+        // Force layout recalculation
+        forceLayoutUpdate();
+
+        // Reinitialize with higher delay for orientation changes
+        setTimeout(() => {
+          safelyInitializeAnimations(300, 20);
+        }, 100);
+      };
+
+      window.addEventListener("orientationchange", orientationHandler);
+
       // Clean up event listeners on component unmount
       return () => {
         mediaMatch.removeEventListener("change", mediaChangeHandler);
         window.removeEventListener("resize", resizeHandler);
+        window.removeEventListener("orientationchange", orientationHandler);
+        window.removeEventListener("load", () => {});
         clearTimeout(window.resizeTimer);
 
         // Clean up context

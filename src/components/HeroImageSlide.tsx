@@ -101,10 +101,9 @@ function HeroImageSlide() {
     if (!containerRef.current) return;
 
     const root = document.documentElement;
-    const { width, height } = window.visualViewport || {
-      width: window.innerWidth,
-      height: window.innerHeight,
-    };
+    // Get accurate viewport dimensions
+    const width = window.innerWidth;
+    const height = window.innerHeight;
 
     // Set responsive variables on root element - batch these operations
     const cssVars = {
@@ -129,6 +128,21 @@ function HeroImageSlide() {
     Object.entries(cssVars).forEach(([prop, val]) => {
       root.style.setProperty(prop, val);
     });
+
+    // Immediately update container width if available
+    if (slidesContainerRef.current && sliderRef.current) {
+      const slidesContainer = slidesContainerRef.current;
+      const slider = sliderRef.current;
+
+      // Force dimensions recalculation
+      dimensionsRef.current.width = width;
+      dimensionsRef.current.height = height;
+      dimensionsRef.current.slidesContainerWidth = slidesContainer.offsetWidth;
+      dimensionsRef.current.sliderWidth = slider.offsetWidth;
+      dimensionsRef.current.slideWidth = width;
+      dimensionsRef.current.totalMove =
+        slidesContainer.offsetWidth - slider.offsetWidth;
+    }
 
     return { width, height };
   }, []);
@@ -223,27 +237,6 @@ function HeroImageSlide() {
     },
     [calculateDimensions, lenisReady, isVisible]
   );
-
-  // Function for handling ScrollTrigger initialization based on a delay
-  const safelySetupGSAPAnimations = useCallback((delay = 0, priority = 0) => {
-    setTimeout(() => {
-      initScrollTriggerWithPriority(() => {
-        // First clear any potential stale triggers
-        ScrollTrigger.getAll().forEach((st) => {
-          const id = st.vars.id as string | undefined;
-          if (id && (id === "hero-image-slider" || id === "hero-context")) {
-            st.kill();
-          }
-        });
-
-        // Reinitialize with fresh instances
-        setupGSAPAnimations();
-
-        // Final refresh to ensure everything is properly positioned
-        setTimeout(() => ScrollTrigger.refresh(true), 100);
-      }, priority);
-    }, delay);
-  }, []);
 
   // Cleanup function - centralized to avoid duplication
   const cleanup = useCallback(() => {
@@ -446,6 +439,38 @@ function HeroImageSlide() {
     };
   }, [lenisReady, calculateDimensions, isVisible]);
 
+  // Handle window resize with debounce - add a manual trigger
+  const forceResize = useCallback(() => {
+    // First update CSS variables
+    setCSSVariables();
+
+    // Then trigger a forced resize after a brief delay
+    setTimeout(() => {
+      // Force recalculation of all dimensions
+      calculateDimensions();
+
+      // Kill and reinitialize ScrollTrigger
+      killScrollTriggers(scrollTriggersRef.current);
+      scrollTriggersRef.current = [];
+
+      // Clean any leftover instances
+      ScrollTrigger.getAll().forEach((st) => {
+        const id = st.vars.id as string | undefined;
+        if (id && (id === "hero-image-slider" || id === "hero-context")) {
+          st.kill();
+        }
+      });
+
+      // Recreate animations
+      setupGSAPAnimations();
+
+      // Final refresh
+      setTimeout(() => {
+        ScrollTrigger.refresh(true);
+      }, 100);
+    }, 50);
+  }, [setCSSVariables, calculateDimensions, setupGSAPAnimations]);
+
   // Optimized resize handler
   const handleResize = useCallback(() => {
     // Clear any existing timeout
@@ -456,29 +481,17 @@ function HeroImageSlide() {
     // Update CSS variables immediately
     setCSSVariables();
 
-    // Kill existing ScrollTriggers on resize start to avoid interference
-    killScrollTriggers(scrollTriggersRef.current);
-    scrollTriggersRef.current = [];
-
     // Use RAF for smoother updates
     requestAnimationFrame(() => {
       resizeTimeoutRef.current = window.setTimeout(() => {
         if (lenisReady && isVisible) {
-          calculateDimensions();
-
-          // Wait a moment after resize ends to ensure DOM has stabilized
-          safelySetupGSAPAnimations(0, 0);
+          // Force a complete resize process
+          forceResize();
         }
         resizeTimeoutRef.current = null;
       }, RESIZE_THROTTLE);
     });
-  }, [
-    setCSSVariables,
-    calculateDimensions,
-    lenisReady,
-    isVisible,
-    safelySetupGSAPAnimations,
-  ]);
+  }, [setCSSVariables, lenisReady, isVisible, forceResize]);
 
   // Handle orientation changes
   const handleOrientationChange = useCallback(() => {
@@ -494,13 +507,9 @@ function HeroImageSlide() {
 
     // Schedule multiple refreshes to ensure everything settles
     setTimeout(() => {
-      setCSSVariables();
-      calculateDimensions();
-
-      // Reinitialize using our helper function
-      safelySetupGSAPAnimations(300, 0);
+      forceResize();
     }, 100);
-  }, [setCSSVariables, calculateDimensions, safelySetupGSAPAnimations]);
+  }, [setCSSVariables, forceResize]);
 
   // Observe changes to display property - simplified
   useEffect(() => {
@@ -592,18 +601,22 @@ function HeroImageSlide() {
           // Add a safety refresh after everything is set up
           setTimeout(() => {
             ScrollTrigger.refresh(true);
+
+            // Force resize once more after init to ensure all dimensions are correct
+            window.addEventListener("load", forceResize, { once: true });
           }, 100);
         }, 0); // Lower priority number runs first
       }, initDelay);
 
       return () => {
         clearTimeout(initTimeout);
+        window.removeEventListener("load", forceResize);
         cleanup();
       };
     },
     {
       scope: containerRef,
-      dependencies: [isVisible],
+      dependencies: [isVisible, forceResize],
     }
   );
 
