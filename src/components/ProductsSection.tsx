@@ -10,7 +10,7 @@ function ProductsSection() {
     offset: ["start start", "end end"],
   });
   return (
-    <div ref={container} className="mt-6">
+    <div ref={container} className="mt-6 block lg:hidden">
       {products.map((product, index) => {
         const targetScale = 1 - (products.length - index) * 0.05;
         return (
