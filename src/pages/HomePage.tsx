@@ -13,7 +13,7 @@ function HomePage() {
       <Message />
       <AnimatedTitle title1="OUR" title2="PRODUCTS" />
       <ProductsSection />
-      <AnimatedTitle title1="FAL TRADING" title2="WHY CHOOSE " />
+      <AnimatedTitle title1="WHY" title2="CHOOSE US" />
       <WhyChooseUs />
     </>
   );

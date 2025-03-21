@@ -15,8 +15,8 @@ export default function AnimatedTitle({ title1, title2 }: AnimatedTitleProps) {
     offset: ["start 0.3", "0.1 start"],
   });
 
-  const forwardX = useTransform(scrollYProgress, [0, 1], ["250%", "-100%"]);
-  const backwardsX = useTransform(scrollYProgress, [0, 1], ["-100%", "250%"]);
+  const forwardX = useTransform(scrollYProgress, [0, 1], ["300%", "-100%"]);
+  const backwardsX = useTransform(scrollYProgress, [0, 1], ["-100%", "300%"]);
 
   return (
     <div ref={containerA}>
