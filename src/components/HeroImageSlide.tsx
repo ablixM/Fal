@@ -343,7 +343,7 @@ function HeroImageSlide() {
           titles.forEach((title, index) => {
             if (title) {
               gsap.to(title, {
-                y: index === currentVisibleIndex ? 0 : -200,
+                y: index === currentVisibleIndex ? 0 : -350,
                 duration: 1,
                 ease: "expo.out",
                 overwrite: true,

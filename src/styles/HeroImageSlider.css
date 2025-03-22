@@ -13,6 +13,12 @@
   --animation-duration: 1s;
 }
 
+.hero-image-slider__slide:first-child .hero-slide__title h1,
+.hero-image-slider__slide:first-child .hero-slide__subtitle {
+  transform: translateY(0);
+  opacity: 1;
+}
+
 .hero-slide__img {
   position: relative;
   width: 100%;
