@@ -15,7 +15,7 @@
 
 .hero-image-slider__slide:first-child .hero-slide__title h1,
 .hero-image-slider__slide:first-child .hero-slide__subtitle {
-  transform: translateY(0);
+  transform: translateY(0) !important;
   opacity: 1;
 }
 
