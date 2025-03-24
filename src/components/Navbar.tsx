@@ -45,13 +45,11 @@ export function Navbar() {
   const navItems: NavItem[] = [
     { name: "Home", path: "/" },
     { name: "Products", path: "/products" },
-    { name: "Services", path: "/services" },
     { name: "About-Us", path: "/about" },
     { name: "Contact-Us", path: "/contact" },
   ];
   const navItemsMobile: NavItem[] = [
     { name: "Home", path: "/" },
-    { name: "Services", path: "/services" },
     { name: "Products", path: "/products" },
     { name: "About-Us", path: "/about" },
     { name: "Contact-Us", path: "/contact" },

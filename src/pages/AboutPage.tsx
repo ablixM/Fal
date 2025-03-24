@@ -1,5 +1,7 @@
-function AboutPage() {
-  return <div>AboutPage</div>;
-}
+import PageTransition from "../components/PageTransition";
 
-export default AboutPage;
+const AboutPage = () => {
+  return <div>AboutPage</div>;
+};
+
+export default PageTransition(AboutPage);

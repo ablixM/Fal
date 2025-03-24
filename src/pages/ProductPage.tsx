@@ -1,5 +1,7 @@
+import PageTransition from "../components/PageTransition";
+
 function ProductPage() {
   return <div>ProductPage</div>;
 }
 
-export default ProductPage;
+export default PageTransition(ProductPage);

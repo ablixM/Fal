@@ -1,11 +1,15 @@
 import { useEffect } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import { Navbar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
 import Lenis from "lenis";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
-import PageTransition from "../components/PageTransition";
+import HomePage from "./HomePage";
+import AboutPage from "./AboutPage";
+import ContactPage from "./ContactPage";
+import ProductPage from "./ProductPage";
+import { AnimatePresence } from "framer-motion";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -28,17 +32,18 @@ function Layout() {
   }, [location.pathname]);
 
   return (
-    <PageTransition>
-      <div>
-        <Navbar />
-
-        <main>
-          <Outlet />
-        </main>
-
-        <Footer />
-      </div>
-    </PageTransition>
+    <>
+      <Navbar />
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
+          <Route index element={<HomePage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/products" element={<ProductPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+        </Routes>
+      </AnimatePresence>
+      <Footer />
+    </>
   );
 }
 

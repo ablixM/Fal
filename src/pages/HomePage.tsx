@@ -5,8 +5,9 @@ import HeroVideo from "../components/HeroVideo";
 import ProductsSection from "../components/ProductsSection";
 import AnimatedTitle from "../components/AnimatedTitle";
 import HeroImageSlide from "../components/HeroImageSlide";
+import PageTransition from "../components/PageTransition";
 
-function HomePage() {
+const HomePage = () => {
   return (
     <>
       <LandingText />
@@ -20,6 +21,6 @@ function HomePage() {
       <WhyChooseUs />
     </>
   );
-}
+};
 
-export default HomePage;
+export default PageTransition(HomePage);

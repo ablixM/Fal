@@ -32,27 +32,28 @@ body {
   overflow-y: auto;
 }
 
-.overlay {
-  position: fixed;
-  width: 200vw;
-  height: 100vh;
-  z-index: 9999;
-  display: flex;
-}
-.overlay-2 {
-  position: fixed;
-  width: 100vw;
-  height: 100vh;
-  z-index: 9999;
-  display: flex;
-}
-
-.bar {
-  width: 20vw;
-  height: 100vh;
-  background-color: var(--color-tertiary);
-}
-
 .animated-title {
   position: relative;
+}
+
+.go-in {
+  z-index: 99999;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100%;
+  background: #17213c;
+  transform-origin: bottom;
+}
+
+.go-out {
+  z-index: 99999;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100%;
+  background: #17213c;
+  transform-origin: top;
 }
