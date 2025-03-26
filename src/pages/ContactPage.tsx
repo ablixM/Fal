@@ -32,7 +32,7 @@ const ContactPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FDFBF0] p-4 md:p-8 lg:p-16 mt-20">
+    <div className="min-h-screen bg-[#FDFBF0] p-4 md:p-8 lg:p-16 mt-12">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col gap-8 mb-8">
           <h1 className="contact-title max-w-2xl text-6xl md:text-7xl lg:text-8xl font-bold text-navy-900">

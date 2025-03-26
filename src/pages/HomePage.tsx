@@ -6,6 +6,8 @@ import ProductsSection from "../components/ProductsSection";
 import AnimatedTitle from "../components/AnimatedTitle";
 import HeroImageSlide from "../components/HeroImageSlide";
 import PageTransition from "../components/PageTransition";
+import CountryLogoParallex from "../components/CountryLogoParallex";
+import Countries from "../components/Countries";
 
 const HomePage = () => {
   return (
@@ -19,6 +21,8 @@ const HomePage = () => {
       <ProductsSection />
       <AnimatedTitle title1="WHY" title2="CHOOSE US" />
       <WhyChooseUs />
+      <AnimatedTitle title1="OUR" title2="PARTNERS" />
+      <Countries />
     </>
   );
 };
