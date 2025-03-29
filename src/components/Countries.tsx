@@ -13,13 +13,14 @@ const CountriesSection = () => {
   const targetRef = useRef<HTMLDivElement | null>(null);
   const { scrollYProgress } = useScroll({
     target: targetRef,
+    offset: ["start start", "end end"],
   });
 
   const x = useTransform(scrollYProgress, [0, 1], ["1%", "-100%"]);
 
   return (
-    <section ref={targetRef} className="relative h-[300vh] bg-neutral-900">
-      <div className="sticky top-0 flex h-screen items-center overflow-hidden">
+    <section ref={targetRef} className="relative h-[300vh]  bg-neutral-900">
+      <div className="sticky top-1/4 sm:top-0 flex  items-center overflow-hidden">
         <motion.div style={{ x }} className="flex gap-4">
           {cards.map((card) => {
             return <Card card={card} key={card.id} />;

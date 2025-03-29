@@ -32,32 +32,36 @@ function ProductCard({
       className="h-[100vh] flex items-center justify-center sticky top-0 md:top-[100px] "
     >
       <motion.div
-        className="w-[90%] h-[50%] md:w-[80%] md:h-[80%] relative flex flex-col items-center justify-start rounded-lg text-octonary"
+        className="w-[90%] h-[50%] md:w-[80%] md:h-[80%] relative flex flex-col items-center justify-end rounded-lg text-octonary overflow-hidden"
         style={{
-          backgroundColor: product.color,
           scale,
           top: `calc(-10% + ${index * 55}px)`,
         }}
       >
-        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-8 text-center pt-16">
-          {product.title || "DATES"}
-        </h1>
-        <p className="text-sm md:text-xl px-2 text-gray-300 mb-8 md:mb-16 max-w-lg text-center">
-          {product.subTitle ||
-            "Pure, rich, and naturally sweet – the finest dates from trusted farms."}
-        </p>
+        {/* Background image with scale animation */}
+        <motion.div
+          className="absolute inset-0 w-full h-full z-0"
+          style={{ scale: imageScale }}
+        >
+          <img
+            className="w-full h-full object-cover"
+            src={product.src}
+            alt={product.title}
+          />
+        </motion.div>
 
-        <div className="rounded-none md:rounded-lg overflow-hidden w-full max-w-lg sm:max-w-xl md:max-w-3xl relative my-0 md:my-4">
-          <motion.div
-            className="w-full h-full flex items-center justify-center "
-            style={{ scale: imageScale }}
-          >
-            <img
-              className="w-full h-full object-cover "
-              src={product.src}
-              alt={product.title}
-            />
-          </motion.div>
+        {/* Black overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-nonary to-transparent"></div>
+
+        {/* Content */}
+        <div className="z-20 relative flex flex-col justify-end px-4">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-8 text-left">
+            {product.title || "DATES"}
+          </h1>
+          <p className="text-sm md:text-xl text-gray-300 mb-8 max-w-lg text-left">
+            {product.subTitle ||
+              "Pure, rich, and naturally sweet – the finest dates from trusted farms."}
+          </p>
         </div>
       </motion.div>
     </div>
