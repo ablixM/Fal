@@ -51,6 +51,13 @@ function AnimatedText({
   // Create custom ease for smooth animation
   CustomEase.create("textReveal", customEase);
 
+  // Add initial hide style to prevent flash of unstyled content
+  useLayoutEffect(() => {
+    if (textRef.current) {
+      gsap.set(textRef.current, { opacity: 0 });
+    }
+  }, []);
+
   // Setup Intersection Observer to detect when element is in view
   useEffect(() => {
     const options = {
@@ -82,6 +89,11 @@ function AnimatedText({
   useGSAP(
     () => {
       if (!isInView || hasAnimatedRef.current) return;
+
+      // Set text to visible now that we're ready to animate it
+      if (textRef.current) {
+        gsap.set(textRef.current, { opacity: 1 });
+      }
 
       // Initial setup of text splitting
       setupTextSplitting();

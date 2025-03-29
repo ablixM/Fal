@@ -140,7 +140,7 @@ function LandingText() {
   return (
     <div
       ref={headerRef}
-      className="header bg-primary py-12 sm:py-16 md:py-20 lg:py-24 max-w-[--width-8xl] w-full mx-auto flex flex-col lg:flex-row justify-between items-center lg:items-start px-4 sm:px-6 md:px-8 lg:px-12"
+      className="header bg-primary pt-12 sm:pt-16 md:pt-20 lg:pt-24 max-w-[--width-8xl] w-full mx-auto flex flex-col lg:flex-row justify-between items-center lg:items-start px-4 sm:px-6 md:px-8 lg:px-12"
     >
       <div className="col mb-8 lg:mb-0">
         <h1

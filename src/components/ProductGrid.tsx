@@ -92,7 +92,7 @@ function ProductGrid({ products, index }: ProductGridProps) {
                 <p className="text-denary font-medium text-base sm:text-xl md:text-2xl lg:text-3xl p-4">
                   <AnimatedText
                     text={products.images[0].subtitle}
-                    as="h2"
+                    as="h4"
                     className="text-3xl font-medium"
                     duration={1}
                     delay={0.2}
@@ -121,7 +121,7 @@ function ProductGrid({ products, index }: ProductGridProps) {
                   <AnimatedText
                     text={products.images[1].subtitle}
                     as="h2"
-                    className="text-3xl font-medium"
+                    className="text-xl sm:text-2xl lg:text-3xl font-medium"
                     duration={1}
                     delay={0.2}
                     staggerAmount={0.4}
@@ -148,7 +148,7 @@ function ProductGrid({ products, index }: ProductGridProps) {
                   <AnimatedText
                     text={products.images[2].subtitle}
                     as="h2"
-                    className="text-3xl font-medium"
+                    className="text-xl sm:text-2xl lg:text-3xl font-medium"
                     duration={1}
                     delay={0.2}
                     staggerAmount={0.4}
@@ -251,7 +251,7 @@ function ProductGrid({ products, index }: ProductGridProps) {
                   <AnimatedText
                     text={products.images[5].subtitle}
                     as="h2"
-                    className="text-3xl font-medium"
+                    className="text-xl sm:text-2xl lg:text-3xl font-medium"
                     duration={1}
                     delay={0.2}
                     staggerAmount={0.4}
