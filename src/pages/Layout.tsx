@@ -10,6 +10,7 @@ import AboutPage from "./AboutPage";
 import ContactPage from "./ContactPage";
 import ProductPage from "./ProductPage";
 import { AnimatePresence } from "framer-motion";
+import ScrollToTop from "../components/ScrollToTop";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -33,6 +34,7 @@ function Layout() {
 
   return (
     <>
+      <ScrollToTop />
       <Navbar />
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>

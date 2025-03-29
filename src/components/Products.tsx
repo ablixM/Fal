@@ -15,14 +15,54 @@ const products: Product[] = [
     description:
       "Pure, rich, and naturally sweet – the finest dates from trusted farms.",
     images: [
-      { url: "/assets/hero-vid.mp4", subtitle: "Premium Selection" },
-      { url: "/assets/dates-hero.webp", subtitle: "Organic Farming" },
-      { url: "/assets/dates-hero.webp", subtitle: "Harvest Process" },
-      { url: "/assets/dates-hero.webp", subtitle: "Quality Control" },
-      { url: "/assets/dates-hero.webp", subtitle: "Hand-Picked" },
-      { url: "/assets/dates-hero.webp", subtitle: "Nutritional Benefits" },
-      { url: "/assets/dates-hero.webp", subtitle: "Sustainable Practices" },
-      { url: "/assets/dates-hero.webp", subtitle: "Global Export" },
+      {
+        url: "/assets/hero-vid.mp4",
+        subtitle: "Premium Selection",
+        description:
+          "Our carefully selected premium dates offer exceptional quality and taste.",
+      },
+      {
+        url: "/assets/dates-hero.webp",
+        subtitle: "Organic Farming",
+        description:
+          "Grown using sustainable methods without harmful pesticides or chemicals.",
+      },
+      {
+        url: "/assets/dates-hero.webp",
+        subtitle: "Harvest Process",
+        description:
+          "Handpicked at peak ripeness to ensure optimal flavor and texture.",
+      },
+      {
+        url: "/assets/dates-hero.webp",
+        subtitle: "Quality Control",
+        description:
+          "Rigorous inspection ensures only the finest dates reach our customers.",
+      },
+      {
+        url: "/assets/dates-hero.webp",
+        subtitle: "Hand-Picked",
+        description:
+          "Each date is individually selected to guarantee premium quality.",
+      },
+      {
+        url: "/assets/dates-hero.webp",
+        subtitle: "Nutritional Benefits",
+        description:
+          "Rich in fiber, antioxidants, and essential nutrients for overall health.",
+      },
+      {
+        url: "/assets/dates-hero.webp",
+        subtitle: "Sustainable Practices",
+        description:
+          "Environmentally conscious farming that preserves natural resources.",
+      },
+      {
+        url: "/assets/dates-hero.webp",
+        subtitle: "Global Export",
+        description:
+          "Delivering premium dates to customers worldwide with care and precision.",
+      },
     ],
   },
   {
@@ -30,14 +70,54 @@ const products: Product[] = [
     description:
       "Pure, rich, and naturally sweet – the finest dates from trusted farms.",
     images: [
-      { url: "/assets/hero-vid.mp4", subtitle: "Arabica Beans" },
-      { url: "/assets/cofee-hero.webp", subtitle: "Roasting Process" },
-      { url: "/assets/cofee-hero.webp", subtitle: "Fair Trade" },
-      { url: "/assets/cofee-hero.webp", subtitle: "Specialty Blends" },
-      { url: "/assets/cofee-hero.webp", subtitle: "Artisan Roasting" },
-      { url: "/assets/cofee-hero.webp", subtitle: "Flavor Profiles" },
-      { url: "/assets/cofee-hero.webp", subtitle: "Single Origin" },
-      { url: "/assets/cofee-hero.webp", subtitle: "Premium Packaging" },
+      {
+        url: "/assets/hero-vid.mp4",
+        subtitle: "Arabica Beans",
+        description:
+          "Premium arabica beans known for their smooth, complex flavor profiles.",
+      },
+      {
+        url: "/assets/cofee-hero.webp",
+        subtitle: "Roasting Process",
+        description:
+          "Artisanal roasting techniques that enhance aroma and flavor complexity.",
+      },
+      {
+        url: "/assets/cofee-hero.webp",
+        subtitle: "Fair Trade",
+        description:
+          "Supporting farmers with fair prices and sustainable business practices.",
+      },
+      {
+        url: "/assets/cofee-hero.webp",
+        subtitle: "Specialty Blends",
+        description:
+          "Unique coffee blends crafted to deliver exceptional taste experiences.",
+      },
+      {
+        url: "/assets/cofee-hero.webp",
+        subtitle: "Artisan Roasting",
+        description:
+          "Small-batch roasting methods that ensure optimal flavor development.",
+      },
+      {
+        url: "/assets/cofee-hero.webp",
+        subtitle: "Flavor Profiles",
+        description:
+          "Diverse taste notes ranging from fruity and floral to nutty and chocolatey.",
+      },
+      {
+        url: "/assets/cofee-hero.webp",
+        subtitle: "Single Origin",
+        description:
+          "Beans sourced from specific regions to showcase unique regional characteristics.",
+      },
+      {
+        url: "/assets/cofee-hero.webp",
+        subtitle: "Premium Packaging",
+        description:
+          "Sealed for freshness with packaging that preserves aromatic qualities.",
+      },
     ],
   },
   {
@@ -45,14 +125,54 @@ const products: Product[] = [
     description:
       "Pure, rich, and naturally sweet – the finest dates from trusted farms.",
     images: [
-      { url: "/assets/hero-vid.mp4", subtitle: "Premium Cashews" },
-      { url: "/assets/cashe-hero.webp", subtitle: "Ethically Sourced" },
-      { url: "/assets/cashe-hero.webp", subtitle: "Processing Facility" },
-      { url: "/assets/cashe-hero.webp", subtitle: "Bulk Selection" },
-      { url: "/assets/cashe-hero.webp", subtitle: "Natural Farming" },
-      { url: "/assets/cashe-hero.webp", subtitle: "Quality Grading" },
-      { url: "/assets/cashe-hero.webp", subtitle: "Export Standard" },
-      { url: "/assets/cashe-hero.webp", subtitle: "Packaging Process" },
+      {
+        url: "/assets/hero-vid.mp4",
+        subtitle: "Premium Cashews",
+        description:
+          "Selected for size, color, and taste to ensure superior quality.",
+      },
+      {
+        url: "/assets/cashe-hero.webp",
+        subtitle: "Ethically Sourced",
+        description:
+          "Responsibly harvested with fair practices supporting local communities.",
+      },
+      {
+        url: "/assets/cashe-hero.webp",
+        subtitle: "Processing Facility",
+        description:
+          "State-of-the-art facilities that maintain highest standards of cleanliness.",
+      },
+      {
+        url: "/assets/cashe-hero.webp",
+        subtitle: "Bulk Selection",
+        description:
+          "Available in various quantities to meet different customer needs.",
+      },
+      {
+        url: "/assets/cashe-hero.webp",
+        subtitle: "Natural Farming",
+        description:
+          "Grown without harmful chemicals to preserve natural flavor and nutrients.",
+      },
+      {
+        url: "/assets/cashe-hero.webp",
+        subtitle: "Quality Grading",
+        description:
+          "Classified by size and appearance to meet international standards.",
+      },
+      {
+        url: "/assets/cashe-hero.webp",
+        subtitle: "Export Standard",
+        description:
+          "Meeting rigorous international quality and safety requirements.",
+      },
+      {
+        url: "/assets/cashe-hero.webp",
+        subtitle: "Packaging Process",
+        description:
+          "Sealed in protective packaging to maintain freshness and flavor.",
+      },
     ],
   },
 ];
@@ -149,7 +269,7 @@ function VideoCarousel() {
 
 export function Products() {
   return (
-    <div className="w-full">
+    <div className="w-full px-2 md:px-4">
       {/* Hero Section */}
       <div className="w-full mx-auto sm:px-4 pt-16 py-4">
         <motion.h1

@@ -4,6 +4,7 @@ import { useRef } from "react";
 export interface ProductImage {
   url: string;
   subtitle: string;
+  description: string;
 }
 
 export interface Product {
@@ -20,11 +21,8 @@ interface ProductGridProps {
 function ProductGrid({ products, index }: ProductGridProps) {
   // Create individual refs
   const ref1 = useRef(null);
-  const ref2 = useRef(null);
-  const ref3 = useRef(null);
   const ref4 = useRef(null);
   const ref5 = useRef(null);
-  const ref6 = useRef(null);
   const ref7 = useRef(null);
   const ref8 = useRef(null);
 
@@ -34,18 +32,6 @@ function ProductGrid({ products, index }: ProductGridProps) {
     offset: ["start end", "end start"],
   });
   const scale1 = useTransform(scrollYProgress1, [0, 0.5, 1], [2, 1, 1]);
-
-  const { scrollYProgress: scrollYProgress2 } = useScroll({
-    target: ref2,
-    offset: ["start end", "end start"],
-  });
-  const scale2 = useTransform(scrollYProgress2, [0, 0.5, 1], [2, 1, 1]);
-
-  const { scrollYProgress: scrollYProgress3 } = useScroll({
-    target: ref3,
-    offset: ["start end", "end start"],
-  });
-  const scale3 = useTransform(scrollYProgress3, [0, 1], [2, 1]);
 
   const { scrollYProgress: scrollYProgress4 } = useScroll({
     target: ref4,
@@ -58,12 +44,6 @@ function ProductGrid({ products, index }: ProductGridProps) {
     offset: ["start end", "end start"],
   });
   const scale5 = useTransform(scrollYProgress5, [0, 0.5, 1], [2, 1, 1]);
-
-  const { scrollYProgress: scrollYProgress6 } = useScroll({
-    target: ref6,
-    offset: ["start end", "end start"],
-  });
-  const scale6 = useTransform(scrollYProgress6, [0, 0.5, 1], [2, 1, 1]);
 
   const { scrollYProgress: scrollYProgress7 } = useScroll({
     target: ref7,
@@ -81,6 +61,9 @@ function ProductGrid({ products, index }: ProductGridProps) {
     <>
       <div className="md:px-16 mx-auto">
         <div key={index}>
+          <h1 className="text-quaternary font-medium text-2xl sm:text-4xl md:text-6xl p-4">
+            {products.title}
+          </h1>
           <div className="grid grid-cols-8 grid-rows-10 gap-4 mt-4 sm:mt-8 md:mt-16">
             {/* Grid position 1 */}
             <div className="col-span-5 row-span-4 relative overflow-hidden">
@@ -98,49 +81,36 @@ function ProductGrid({ products, index }: ProductGridProps) {
                   autoPlay={true}
                 />
               </motion.div>
-              <div className="absolute inset-0 bg-gradient-to-t from-nonary to-transparent flex items-end">
-                <p className="text-denary font-medium text-2xl sm:text-4xl md:text-6xl p-4">
+              <div className="absolute inset-0 bg-gradient-to-t from-nonary to-transparent flex flex-col items-start justify-end">
+                <p className="text-denary font-medium text-lg sm:text-2xl md:text-4xl lg:text-5xl p-4">
                   {products.images[0].subtitle}
+                </p>
+                <p className="text-denary px-4 pb-4 text-sm sm:text-base md:text-lg max-w-2xl">
+                  {products.images[0].description}
                 </p>
               </div>
             </div>
 
             {/* Grid position 2 */}
             <div className="col-span-3 row-span-4 col-start-6 relative overflow-hidden">
-              <motion.div
-                ref={ref2}
-                className="w-full h-full flex items-center justify-center"
-                style={{ scale: scale2 }}
-              >
-                <img
-                  className="w-full h-full object-cover"
-                  src={products.images[1].url}
-                  alt={products.images[1].subtitle}
-                />
-              </motion.div>
-              <div className="absolute inset-0 bg-gradient-to-t from-nonary to-transparent flex items-end">
-                <p className="text-denary font-medium text-2xl sm:text-4xl md:text-6xl p-4">
+              <div className="flex flex-col h-full justify-center">
+                <p className="text-quaternary font-medium text-lg sm:text-2xl md:text-4xl lg:text-5xl p-4">
                   {products.images[1].subtitle}
+                </p>
+                <p className="text-quaternary px-4 text-sm sm:text-base md:text-lg">
+                  {products.images[1].description}
                 </p>
               </div>
             </div>
 
             {/* Grid position 3 */}
-            <div className="col-span-2 row-span-4 row-start-5 relative overflow-hidden">
-              <motion.div
-                ref={ref3}
-                className="w-full h-full flex items-center justify-center"
-                style={{ scale: scale3 }}
-              >
-                <img
-                  className="w-full h-full object-cover"
-                  src={products.images[2].url}
-                  alt={products.images[2].subtitle}
-                />
-              </motion.div>
-              <div className="absolute inset-0 bg-gradient-to-t from-nonary to-transparent flex items-end">
-                <p className="text-denary font-medium text-2xl sm:text-4xl md:text-6xl p-4">
+            <div className="col-span-2 row-span-4 row-start-5 relative overflow-hidden flex items-center justify-center">
+              <div className="flex flex-col h-full justify-center">
+                <p className="text-quaternary font-medium text-lg sm:text-2xl md:text-4xl lg:text-5xl p-4">
                   {products.images[2].subtitle}
+                </p>
+                <p className="text-quaternary px-4 text-sm sm:text-base md:text-lg">
+                  {products.images[2].description}
                 </p>
               </div>
             </div>
@@ -158,9 +128,12 @@ function ProductGrid({ products, index }: ProductGridProps) {
                   alt={products.images[3].subtitle}
                 />
               </motion.div>
-              <div className="absolute inset-0 bg-gradient-to-t from-nonary to-transparent flex items-end">
-                <p className="text-denary font-medium text-2xl sm:text-4xl md:text-6xl p-4">
+              <div className="absolute inset-0 bg-gradient-to-t from-nonary to-transparent hidden sm:flex flex-col items-start justify-end ">
+                <p className="text-denary font-medium text-lg sm:text-2xl md:text-4xl lg:text-5xl p-4">
                   {products.images[3].subtitle}
+                </p>
+                <p className="text-denary px-4 pb-4 text-sm sm:text-base md:text-lg max-w-2xl">
+                  {products.images[3].description}
                 </p>
               </div>
             </div>
@@ -178,29 +151,24 @@ function ProductGrid({ products, index }: ProductGridProps) {
                   alt={products.images[4].subtitle}
                 />
               </motion.div>
-              <div className="absolute inset-0 bg-gradient-to-t from-nonary to-transparent flex items-end">
-                <p className="text-denary font-medium text-2xl sm:text-4xl md:text-6xl p-4">
+              <div className="absolute inset-0 bg-gradient-to-t from-nonary to-transparent hidden sm:flex flex-col items-start justify-end">
+                <p className="text-denary font-medium text-lg sm:text-2xl md:text-4xl lg:text-5xl p-4">
                   {products.images[4].subtitle}
+                </p>
+                <p className="text-denary px-4 pb-4 text-sm sm:text-base md:text-lg max-w-2xl">
+                  {products.images[4].description}
                 </p>
               </div>
             </div>
 
             {/* Grid position 6 */}
-            <div className="col-span-3 row-span-3 col-start-3 row-start-8 relative overflow-hidden">
-              <motion.div
-                ref={ref6}
-                className="w-full h-full flex items-center justify-center"
-                style={{ scale: scale6 }}
-              >
-                <img
-                  className="w-full h-full object-cover"
-                  src={products.images[5].url}
-                  alt={products.images[5].subtitle}
-                />
-              </motion.div>
-              <div className="absolute inset-0 bg-gradient-to-t from-nonary to-transparent flex items-end">
-                <p className="text-denary font-medium text-2xl sm:text-4xl md:text-6xl p-4">
+            <div className="col-span-3 row-span-3 col-start-3 row-start-8 relative overflow-hidden flex items-center justify-center">
+              <div className="flex flex-col h-full justify-center">
+                <p className="text-quaternary font-medium text-lg sm:text-2xl md:text-4xl lg:text-5xl p-4">
                   {products.images[5].subtitle}
+                </p>
+                <p className="text-quaternary px-4 text-sm sm:text-base md:text-lg">
+                  {products.images[5].description}
                 </p>
               </div>
             </div>
@@ -218,9 +186,12 @@ function ProductGrid({ products, index }: ProductGridProps) {
                   alt={products.images[6].subtitle}
                 />
               </motion.div>
-              <div className="absolute inset-0 bg-gradient-to-t from-nonary to-transparent flex items-end">
-                <p className="text-denary font-medium text-2xl sm:text-4xl md:text-6xl p-4">
+              <div className="absolute inset-0 bg-gradient-to-t from-nonary to-transparent hidden sm:flex flex-col items-start justify-end">
+                <p className="text-denary font-medium text-lg sm:text-2xl md:text-4xl lg:text-5xl p-4">
                   {products.images[6].subtitle}
+                </p>
+                <p className="text-denary px-4 pb-4 text-sm sm:text-base md:text-lg max-w-2xl">
+                  {products.images[6].description}
                 </p>
               </div>
             </div>
@@ -238,9 +209,12 @@ function ProductGrid({ products, index }: ProductGridProps) {
                   alt={products.images[7].subtitle}
                 />
               </motion.div>
-              <div className="absolute inset-0 bg-gradient-to-t from-nonary to-transparent flex items-end">
-                <p className="text-denary font-medium text-2xl sm:text-4xl md:text-6xl p-4">
+              <div className="absolute inset-0 bg-gradient-to-t from-nonary to-transparent hidden sm:flex flex-col items-start justify-end">
+                <p className="text-denary font-medium text-lg sm:text-2xl md:text-4xl lg:text-5xl p-4">
                   {products.images[7].subtitle}
+                </p>
+                <p className="text-denary px-4 pb-4 text-sm sm:text-base md:text-lg max-w-2xl">
+                  {products.images[7].description}
                 </p>
               </div>
             </div>
