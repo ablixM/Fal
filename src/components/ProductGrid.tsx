@@ -1,5 +1,6 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
+import AnimatedText from "./AnimatedText";
 
 export interface ProductImage {
   url: string;
@@ -62,7 +63,13 @@ function ProductGrid({ products, index }: ProductGridProps) {
       <div className="md:px-16 mx-auto">
         <div key={index}>
           <h1 className="text-quaternary font-medium text-2xl sm:text-2xl lg:text-6xl p-4">
-            {products.title}
+            <AnimatedText
+              text={products.title}
+              as="h1"
+              className="text-3xl font-medium"
+              duration={1}
+              delay={0.2}
+            />
           </h1>
           <div className="grid grid-cols-8 grid-rows-10 gap-4 mt-4 sm:mt-8 md:mt-16">
             {/* Grid position 1 */}
@@ -83,10 +90,26 @@ function ProductGrid({ products, index }: ProductGridProps) {
               </motion.div>
               <div className="absolute inset-0 bg-gradient-to-t from-nonary to-transparent flex flex-col items-start justify-end">
                 <p className="text-denary font-medium text-base sm:text-xl md:text-2xl lg:text-3xl p-4">
-                  {products.images[0].subtitle}
+                  <AnimatedText
+                    text={products.images[0].subtitle}
+                    as="h2"
+                    className="text-3xl font-medium"
+                    duration={1}
+                    delay={0.2}
+                    staggerAmount={0.2}
+                    splitTypes={["words"]}
+                  />
                 </p>
                 <p className="text-denary px-4 pb-4 text-sm ">
-                  {products.images[0].description}
+                  <AnimatedText
+                    text={products.images[0].description}
+                    as="p"
+                    className="text-sm"
+                    duration={1}
+                    delay={0.2}
+                    splitTypes={["words"]}
+                    staggerAmount={0.4}
+                  />
                 </p>
               </div>
             </div>
@@ -95,10 +118,25 @@ function ProductGrid({ products, index }: ProductGridProps) {
             <div className="col-span-3 row-span-4 col-start-6 relative overflow-hidden">
               <div className="flex flex-col h-full justify-center">
                 <p className="text-quaternary font-medium text-base sm:text-xl md:text-2xl lg:text-3xl p-4">
-                  {products.images[1].subtitle}
+                  <AnimatedText
+                    text={products.images[1].subtitle}
+                    as="h2"
+                    className="text-3xl font-medium"
+                    duration={1}
+                    delay={0.2}
+                    staggerAmount={0.4}
+                  />
                 </p>
                 <p className="text-quaternary px-4 text-sm max-w-2xl">
-                  {products.images[1].description}
+                  <AnimatedText
+                    text={products.images[1].description}
+                    as="p"
+                    className="text-sm"
+                    duration={1}
+                    delay={0.2}
+                    splitTypes={["words"]}
+                    staggerAmount={0.4}
+                  />
                 </p>
               </div>
             </div>
@@ -107,10 +145,25 @@ function ProductGrid({ products, index }: ProductGridProps) {
             <div className="col-span-2 row-span-4 row-start-5 relative overflow-hidden flex items-center justify-center">
               <div className="flex flex-col h-full justify-center">
                 <p className="text-quaternary font-medium text-base sm:text-xl md:text-2xl lg:text-3xl p-4">
-                  {products.images[2].subtitle}
+                  <AnimatedText
+                    text={products.images[2].subtitle}
+                    as="h2"
+                    className="text-3xl font-medium"
+                    duration={1}
+                    delay={0.2}
+                    staggerAmount={0.4}
+                  />
                 </p>
                 <p className="text-quaternary px-4 text-sm max-w-2xl">
-                  {products.images[2].description}
+                  <AnimatedText
+                    text={products.images[2].description}
+                    as="p"
+                    className="text-sm"
+                    duration={1}
+                    delay={0.2}
+                    splitTypes={["chars"]}
+                    staggerAmount={0.4}
+                  />
                 </p>
               </div>
             </div>
@@ -130,10 +183,25 @@ function ProductGrid({ products, index }: ProductGridProps) {
               </motion.div>
               <div className="absolute inset-0 bg-gradient-to-t from-nonary to-transparent hidden sm:flex flex-col items-start justify-end ">
                 <p className="text-denary font-medium text-base sm:text-xl md:text-2xl lg:text-3xl p-4">
-                  {products.images[3].subtitle}
+                  <AnimatedText
+                    text={products.images[3].subtitle}
+                    as="h2"
+                    className="text-3xl font-medium"
+                    duration={1}
+                    delay={0.2}
+                    staggerAmount={0.4}
+                  />
                 </p>
                 <p className="text-denary px-4 pb-4 text-sm max-w-2xl">
-                  {products.images[3].description}
+                  <AnimatedText
+                    text={products.images[3].description}
+                    as="p"
+                    className="text-sm"
+                    duration={1}
+                    delay={0.2}
+                    splitTypes={["words"]}
+                    staggerAmount={0.4}
+                  />
                 </p>
               </div>
             </div>
@@ -153,10 +221,25 @@ function ProductGrid({ products, index }: ProductGridProps) {
               </motion.div>
               <div className="absolute inset-0 bg-gradient-to-t from-nonary to-transparent hidden sm:flex flex-col items-start justify-end">
                 <p className="text-denary font-medium text-base sm:text-xl md:text-2xl lg:text-3xl p-4">
-                  {products.images[4].subtitle}
+                  <AnimatedText
+                    text={products.images[4].subtitle}
+                    as="h2"
+                    className="text-3xl font-medium"
+                    duration={1}
+                    delay={0.2}
+                    staggerAmount={0.4}
+                  />
                 </p>
                 <p className="text-denary px-4 pb-4 text-sm max-w-2xl">
-                  {products.images[4].description}
+                  <AnimatedText
+                    text={products.images[4].description}
+                    as="p"
+                    className="text-sm"
+                    duration={1}
+                    delay={0.2}
+                    splitTypes={["words"]}
+                    staggerAmount={0.4}
+                  />
                 </p>
               </div>
             </div>
@@ -165,10 +248,25 @@ function ProductGrid({ products, index }: ProductGridProps) {
             <div className="col-span-3 row-span-3 col-start-3 row-start-8 relative overflow-hidden flex items-center justify-center">
               <div className="flex flex-col h-full justify-center">
                 <p className="text-quaternary font-medium text-base sm:text-xl md:text-2xl lg:text-3xl p-4">
-                  {products.images[5].subtitle}
+                  <AnimatedText
+                    text={products.images[5].subtitle}
+                    as="h2"
+                    className="text-3xl font-medium"
+                    duration={1}
+                    delay={0.2}
+                    staggerAmount={0.4}
+                  />
                 </p>
                 <p className="text-quaternary px-4 text-sm max-w-2xl">
-                  {products.images[5].description}
+                  <AnimatedText
+                    text={products.images[5].description}
+                    as="p"
+                    className="text-sm"
+                    duration={1}
+                    delay={0.2}
+                    splitTypes={["words"]}
+                    staggerAmount={0.4}
+                  />
                 </p>
               </div>
             </div>
@@ -188,10 +286,25 @@ function ProductGrid({ products, index }: ProductGridProps) {
               </motion.div>
               <div className="absolute inset-0 bg-gradient-to-t from-nonary to-transparent hidden sm:flex flex-col items-start justify-end">
                 <p className="text-denary font-medium text-base sm:text-xl md:text-2xl lg:text-3xl p-4">
-                  {products.images[6].subtitle}
+                  <AnimatedText
+                    text={products.images[6].subtitle}
+                    as="h2"
+                    className="text-3xl font-medium"
+                    duration={1}
+                    delay={0.2}
+                    staggerAmount={0.4}
+                  />
                 </p>
                 <p className="text-denary px-4 pb-4 text-sm max-w-2xl">
-                  {products.images[6].description}
+                  <AnimatedText
+                    text={products.images[6].description}
+                    as="p"
+                    className="text-sm"
+                    duration={1}
+                    delay={0.2}
+                    splitTypes={["words"]}
+                    staggerAmount={0.4}
+                  />
                 </p>
               </div>
             </div>
@@ -211,10 +324,25 @@ function ProductGrid({ products, index }: ProductGridProps) {
               </motion.div>
               <div className="absolute inset-0 bg-gradient-to-t from-nonary to-transparent hidden sm:flex flex-col items-start justify-end">
                 <p className="text-denary font-medium text-base sm:text-xl md:text-2xl lg:text-3xl p-4">
-                  {products.images[7].subtitle}
+                  <AnimatedText
+                    text={products.images[7].subtitle}
+                    as="h2"
+                    className="text-3xl font-medium"
+                    duration={1}
+                    delay={0.2}
+                    staggerAmount={0.4}
+                  />
                 </p>
                 <p className="text-denary px-4 pb-4 text-sm max-w-2xl">
-                  {products.images[7].description}
+                  <AnimatedText
+                    text={products.images[7].description}
+                    as="p"
+                    className="text-sm"
+                    duration={1}
+                    delay={0.2}
+                    splitTypes={["words"]}
+                    staggerAmount={0.4}
+                  />
                 </p>
               </div>
             </div>

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import PageTransition from "../components/PageTransition";
 import { useContactForm } from "../hooks/useContactForm";
+import { motion } from "framer-motion";
+import AnimatedText from "../components/AnimatedText";
 
 interface FormData {
   name: string;
@@ -36,7 +38,14 @@ const ContactPage = () => {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col gap-8 mb-8">
           <h1 className="contact-title max-w-2xl text-6xl md:text-7xl lg:text-8xl font-bold text-navy-900">
-            Let's work together!
+            <AnimatedText
+              text="Let's work together!"
+              as="h1"
+              className="text-6xl md:text-7xl lg:text-8xl font-bold text-navy-900"
+              duration={1}
+              delay={0.2}
+              splitTypes={["words"]}
+            />
           </h1>
           <p className="text-gray-600">
             Fill out this form and we will get back to you in the next 24 hours
@@ -128,19 +137,25 @@ const ContactPage = () => {
                 </div>
               </div>
 
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="px-8 py-3 border border-gray-900 rounded-full hover:bg-gray-900 hover:text-white transition-colors duration-300"
-              >
-                {isLoading ? "Sending..." : "SEND MESSAGE"}
-              </button>
+              <div className="flex justify-center">
+                <motion.a
+                  type="submit"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleSubmit}
+                  className="inline-block border border-quaternary  rounded-full py-3 px-8 sm:py-4 sm:px-10  text-quaternary hover:bg-quaternary hover:text-primary transition-colors text-sm sm:text-lg "
+                >
+                  {isLoading ? "Sending..." : "SEND MESSAGE"}
+                </motion.a>
+              </div>
 
               {isSuccess && (
-                <p className="text-green-600">Message sent successfully!</p>
+                <p className="text-green-600 text-center">
+                  Message sent successfully!
+                </p>
               )}
               {isError && (
-                <p className="text-red-600">
+                <p className="text-red-600 text-center">
                   Error sending message. Please try again.
                 </p>
               )}

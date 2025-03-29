@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import ProductGrid from "./ProductGrid";
 import { Product } from "./ProductGrid";
+import AnimatedText from "./AnimatedText";
 interface VideoSlide {
   id: number;
   title: string;
@@ -236,14 +237,30 @@ function VideoCarousel() {
               animate={{ y: 0, opacity: 1 }}
               className="text-3xl md:text-4xl font-bold mb-4 text-center px-4"
             >
-              {currentSlide.title}
+              <AnimatedText
+                text={currentSlide.title}
+                as="h2"
+                className="text-3xl md:text-4xl font-bold mb-4 text-center px-4"
+                duration={1}
+                delay={0.2}
+                splitTypes={["words"]}
+                staggerAmount={0.4}
+              />
             </motion.h2>
             <motion.p
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               className="text-lg md:text-xl text-center max-w-2xl px-4"
             >
-              {currentSlide.description}
+              <AnimatedText
+                text={currentSlide.description}
+                as="p"
+                className="text-lg md:text-xl text-center max-w-2xl px-4"
+                duration={1}
+                delay={0.2}
+                splitTypes={["words"]}
+                staggerAmount={0.4}
+              />
             </motion.p>
           </div>
         </motion.div>
